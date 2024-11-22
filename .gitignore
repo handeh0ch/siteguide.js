@@ -1,0 +1,13 @@
+*
+
+!/.husky
+!/.husky/*
+!.editorconfig
+!.gitignore
+!.prettierrc.json
+!commitlint.config.js
+!eslint.config.js
+!LICENSE
+!package-lock.json
+!package.json
+!README.md

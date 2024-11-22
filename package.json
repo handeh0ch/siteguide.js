@@ -1,0 +1,50 @@
+{
+    "name": "mono-siteguide",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "prepare": "husky",
+        "lint": "eslint ./projects --fix --report-unused-disable-directives --max-warnings 0",
+        "prettier": "prettier -w ./projects"
+    },
+    "description": "Siteguide.js monorepo",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Handehoch/siteguide.js.git"
+    },
+    "author": {
+        "name": "Borislav Shelanov",
+        "email": "borislav.shelanov@gmail.com"
+    },
+    "lint-staged": {
+        "**/*.{js,jsx,ts,tsx}": [
+            "npm run lint",
+            "npm run prettier"
+        ],
+        "**/*.{html,json,css,scss,md,mdx}": [
+            "prettier -w"
+        ]
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@commitlint/cli": "^19.6.0",
+        "@commitlint/config-conventional": "^19.6.0",
+        "@eslint/js": "^9.15.0",
+        "@types/eslint__js": "^8.42.3",
+        "@typescript-eslint/eslint-plugin": "^8.14.0",
+        "@typescript-eslint/parser": "^8.14.0",
+        "eslint": "^9.15.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-jsdoc": "^50.5.0",
+        "globals": "^15.12.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.2.10",
+        "typescript": "~5.6.2",
+        "typescript-eslint": "^8.15.0"
+    },
+    "packageManager": "npm@10.8.2",
+    "engines": {
+        "node": "18.* || >= 20"
+    }
+}
