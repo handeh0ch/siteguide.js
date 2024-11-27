@@ -4,6 +4,7 @@
 !/.husky/*
 !.editorconfig
 !.gitignore
+!.eslintignore
 !.prettierrc.json
 !commitlint.config.js
 !eslint.config.js
@@ -11,3 +12,5 @@
 !package-lock.json
 !package.json
 !README.md
+!/projects/
+!/projects/*

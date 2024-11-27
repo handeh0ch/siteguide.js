@@ -1,0 +1,59 @@
+{
+    "name": "siteguide.js",
+    "version": "0.1.0",
+    "description": "Site guide and tours building lib",
+    "license": "MIT",
+    "keywords": [
+        "siteguide",
+        "site tour",
+        "tour",
+        "tutorial",
+        "tour",
+        "guide",
+        "onboarding tour"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Handehoch/siteguide.js.git"
+    },
+    "author": {
+        "name": "Borislav Shelanov",
+        "email": "borislav.shelanov@gmail.com"
+    },
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "type": "module",
+    "exports": {
+        "./dist/styles/siteguide.css": "./dist/styles/siteguide.css"
+    },
+    "files": [
+        "dist"
+    ],
+    "private": false,
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/",
+        "access": "public"
+    },
+    "scripts": {
+        "clean": "rimraf dist",
+        "dev": "vite build --watch",
+        "start": "vite --host --open",
+        "build": "npm run clean && vite build",
+        "rollup:dts": "api-extractor run",
+        "append:dts": "npm run rollup:dts",
+        "lint:scripts": "eslint ./src --ext .ts",
+        "lint:styles": "stylelint ./**/*.{css,scss}",
+        "format:scripts": "prettier ./src --write",
+        "format:styles": "stylelint ./**/*.{css,scss} --fix"
+    },
+    "devDependencies": {
+        "@types/node": "^22.9.1",
+        "postcss": "^8.4.49",
+        "rollup": "^4.27.4",
+        "rollup-plugin-postcss": "^4.0.2",
+        "typescript": "^5.4.2",
+        "vite": "^5.4.10",
+        "vite-plugin-dts": "^4.3.0"
+    }
+}

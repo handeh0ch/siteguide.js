@@ -1,11 +1,11 @@
 {
     "name": "mono-siteguide",
-    "private": true,
+    "private": false,
     "version": "0.1.0",
     "type": "module",
     "scripts": {
         "prepare": "husky",
-        "lint": "eslint ./projects --fix --report-unused-disable-directives --max-warnings 0",
+        "lint": "eslint ./projects -c ./eslint.config.js --fix",
         "prettier": "prettier -w ./projects"
     },
     "description": "Siteguide.js monorepo",
@@ -18,7 +18,7 @@
         "email": "borislav.shelanov@gmail.com"
     },
     "lint-staged": {
-        "**/*.{js,jsx,ts,tsx}": [
+        "**/*.{js,ts}": [
             "npm run lint",
             "npm run prettier"
         ],
@@ -37,10 +37,16 @@
         "eslint": "^9.15.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-jsdoc": "^50.5.0",
+        "eslint-plugin-prettier": "^5.2.1",
         "globals": "^15.12.0",
         "husky": "^9.1.7",
         "lint-staged": "^15.2.10",
-        "typescript": "~5.6.2",
+        "prettier": "^3.3.3",
+        "rimraf": "^6.0.1",
+        "stylelint": "^16.10.0",
+        "stylelint-config-recommended": "^14.0.1",
+        "stylelint-config-sass-guidelines": "^12.1.0",
+        "typescript": "^5.4.2",
         "typescript-eslint": "^8.15.0"
     },
     "packageManager": "npm@10.8.2",

@@ -1,46 +1,71 @@
-import pluginJs from '@eslint/js';
+import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import jsdoc from 'eslint-plugin-jsdoc';
+import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-/** @type {import('eslint').Linter.Config[]} */
+/**
+ * Adds ignores to the given ESLint configuration(s).
+ *
+ * @param {Object|Object[]} configs - The ESLint configuration(s) to modify.
+ * @returns {Object[]} The modified ESLint configuration(s) with ignores added.
+ */
+function withIgnores(configs) {
+    if (!Array.isArray(configs)) {
+        return [
+            {
+                ...configs,
+                ignores: ['**/dist/**', '**/*sample*'],
+            },
+        ];
+    }
+
+    return configs.map((config) => {
+        return {
+            ...config,
+            ignores: ['**/dist/**', '**/*sample*'],
+        };
+    });
+}
+
 export default tseslint.config(
-    { files: ['**/*.{js,mjs,cjs,ts}'] },
-    { languageOptions: { globals: globals.browser } },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
     {
+        languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    },
+    withIgnores(eslint.configs.recommended),
+    withIgnores(tseslint.configs.strict).map((config) => {
+        return {
+            ...config,
+            rules: {
+                '@typescript-eslint/no-invalid-void-type': 0,
+                'no-undef': 0,
+                'no-unused-vars': [
+                    'error',
+                    {
+                        vars: 'all',
+                        args: 'none',
+                        ignoreRestSiblings: true,
+                        caughtErrors: 'all',
+                        caughtErrorsIgnorePattern: '.*',
+                        destructuredArrayIgnorePattern: '.*',
+                    },
+                ],
+            },
+        };
+    }),
+    withIgnores({
         files: ['**/*.ts'],
         plugins: {
             jsdoc,
+            prettier,
         },
         rules: {
             'prefer-const': 'error',
-            '@typescript-eslint/typedef': [
-                'error',
-                {
-                    parameter: true,
-                    arrowParameter: false,
-                    arrayDestructuring: true,
-                    objectDestructuring: true,
-                    propertyDeclaration: true,
-                    variableDeclaration: true,
-                    memberVariableDeclaration: true,
-                    variableDeclarationIgnoreFunction: true,
-                },
-            ],
             quotes: [2, 'single', { avoidEscape: true }],
             semi: 'error',
             indent: 'error',
             'no-prototype-builtins': 'off',
-            'object-curly-spacing': ['error', 'always'],
-            '@typescript-eslint/ban-ts-comment': 0,
-            '@typescript-eslint/no-empty-interface': 0,
-            '@typescript-eslint/no-inferrable-types': 0,
-            '@typescript-eslint/no-explicit-any': 0,
-            '@typescript-eslint/explicit-function-return-type': 'error',
-            '@typescript-eslint/explicit-member-accessibility': 'error',
             'jsdoc/check-access': 1,
             'jsdoc/check-alignment': 1,
             'jsdoc/check-line-alignment': 1,
@@ -90,17 +115,6 @@ export default tseslint.config(
                 },
             ],
         },
-    },
-    {
-        files: ['*.html'],
-        rules: {
-            'filename-rules/match': [
-                2,
-                { '.ts': '/^[a-z0-9-?.*]+$/' },
-                { '.html': '/^[a-z0-9-?.*]+$/' },
-                { '.scss': '/^[a-z0-9-?.*]+$/' },
-            ],
-        },
-    },
+    }),
     eslintConfigPrettier
 );
