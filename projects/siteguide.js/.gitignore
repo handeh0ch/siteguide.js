@@ -4,7 +4,14 @@
 !.npmignore
 !.stylelintrc
 !vite.config.ts
+!api-extractor.json
 !package-lock.json
 !package.json
 !tsconfig.json
 !tsconfig.node.json
+!src/
+!src/**
+!src/siteguide.css
+src/reset.css
+src/main.ts
+src/vite-env.d.ts

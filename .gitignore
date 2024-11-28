@@ -13,4 +13,4 @@
 !package.json
 !README.md
 !/projects/
-!/projects/*
+!/projects/**
