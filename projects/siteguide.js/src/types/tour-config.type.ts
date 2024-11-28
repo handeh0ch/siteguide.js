@@ -1,4 +1,10 @@
+import { type } from 'os';
+
+type;
+
 export type TourConfig = {
-    className?: string;
-    helperClassName?: string;
+    classPrefix?: string;
+    options?: {
+        scrollTo?: boolean | ScrollIntoViewOptions;
+    };
 };

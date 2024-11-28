@@ -1,6 +1,7 @@
+import { DeepRequired } from 'types/utility.type';
 import { IUpdatePopup } from './element-creator/interfaces/update-popup.interface';
 import { CustomStepStrategy } from './element-creator/strategies/custom-step.strategy';
-import { DefaultStepStrategy } from './element-creator/strategies/default-step.strategy';
+import { TextStepStrategy } from './element-creator/strategies/text-step.strategy';
 import { TourStep } from './tour-step';
 import { ButtonConfig } from './types/button-config.type';
 import { PopupType } from './types/popup.type';
@@ -9,20 +10,37 @@ import { StepId, TourStepConfig } from './types/tour-step-config.type';
 import { createElement } from './utils/create-element.util';
 
 export class Tour {
-    public get stepList(): TourStep[] {
-        return [...this._stepList];
+    public get stepList(): readonly TourStep[] {
+        return this._stepList as Readonly<TourStep[]>;
     }
 
-    public get config(): TourConfig {
+    public get config(): DeepRequired<TourConfig> {
         return this._config;
     }
 
-    public get popupElement(): HTMLElement | null {
-        return this._popupElement;
+    /**
+     * Popup element getter
+     * @returns {HTMLElement | null} The popup element or null if not found.
+     * @example siteguide popup layout
+     *
+     * <div class="siteguide">
+     *     <div class="siteguide-header">
+     *         <h1 class="siteguide-title"></h1>
+     *         <div class="siteguide-close"></div>
+     *     </div>
+     *     <div class="siteguide-content"></div>
+     *     <div class="siteguide-footer">
+     *         <button class="siteguide-button"></button>
+     *         <button class="siteguide-button"></button>
+     *     </div>
+     * </div>
+     */
+    public get popup(): HTMLElement | null {
+        return this._popup;
     }
 
-    public get helperElement(): HTMLElement | null {
-        return this._helperElement;
+    public get helperLayout(): HTMLElement | null {
+        return this._helperLayout;
     }
 
     /**
@@ -33,17 +51,25 @@ export class Tour {
 
     public readonly updatePopupStrategies: Map<PopupType, IUpdatePopup> = new Map();
 
-    private _popupElement: HTMLElement | null = null;
-    private _helperElement: HTMLElement | null = null;
+    private _popup: HTMLElement | null = null;
+    private _helperLayout: HTMLElement | null = null;
 
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
     private _stepList: TourStep[] = [];
     private _currentStep: TourStep | null = null;
     private _bodyResizeObserver!: ResizeObserver;
+    private readonly _config: DeepRequired<TourConfig>;
 
-    public constructor(private readonly _config: TourConfig) {
+    public constructor(config: TourConfig) {
         this.setUpStrategies();
         this.setUpBodySizeObserver();
+
+        this._config = {
+            classPrefix: config.classPrefix ?? 'siteguide',
+            options: {
+                scrollTo: config.options?.scrollTo ?? true,
+            },
+        };
     }
 
     public addStep(config: TourStepConfig): void {
@@ -53,7 +79,7 @@ export class Tour {
 
         const step: TourStep = new TourStep(this, config);
 
-        config.popup.buttonCollection.forEach((button: ButtonConfig) => (button.action = button.action.bind(this)));
+        config.popup.buttonCollection.forEach((button: ButtonConfig) => (button.action = button.action.bind(this, {})));
         this._stepList.push(step);
         this._stepMap.set(config.id, step);
     }
@@ -67,11 +93,14 @@ export class Tour {
     public start(): void {
         this.isStarted = true;
 
-        this._popupElement = createElement('div', ['overview', this._config.className ?? '']);
-        document.body.appendChild(this._popupElement);
+        this._popup = createElement('div', [this._config.classPrefix]);
+        document.body.appendChild(this._popup);
 
-        this._helperElement = createElement('div', ['overview-helper', this._config.helperClassName ?? '']);
-        document.body.appendChild(this._helperElement);
+        this._helperLayout = createElement('div', [`${this._config.classPrefix}-helper`]);
+        this._helperLayout.addEventListener('click', () => {
+            this.complete();
+        });
+        document.body.appendChild(this._helperLayout);
 
         this.next();
     }
@@ -79,12 +108,12 @@ export class Tour {
     public complete(): void {
         this.isStarted = false;
 
-        if (this._popupElement) {
-            document.body.removeChild(this._popupElement);
+        if (this._popup) {
+            document.body.removeChild(this._popup);
         }
 
-        if (this._helperElement) {
-            document.body.removeChild(this._helperElement);
+        if (this._helperLayout) {
+            document.body.removeChild(this._helperLayout);
         }
     }
 
@@ -117,7 +146,7 @@ export class Tour {
     }
 
     private setUpStrategies(): void {
-        this.updatePopupStrategies.set('default', new DefaultStepStrategy());
+        this.updatePopupStrategies.set('text', new TextStepStrategy());
         this.updatePopupStrategies.set('custom', new CustomStepStrategy());
     }
 

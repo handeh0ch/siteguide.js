@@ -1,5 +1,5 @@
 export type ButtonConfig = {
-    title: string;
+    text: string;
     className?: string;
     action: () => void | (() => Promise<void>);
 };

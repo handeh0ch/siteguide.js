@@ -1,22 +1,20 @@
 import type { ButtonConfig } from './button-config.type';
 
-export type PopupData = DefaultPopupData | CustomPopupData;
+export type PopupData = TextPopupData | CustomPopupData;
 
-export type PopupType = 'default' | 'custom';
+export type PopupType = 'text' | 'custom';
 
 export type PopupPosition = 'top' | 'bottom' | 'left' | 'right';
 
 export type SharedPopupData = {
-    className?: string;
+    title?: string;
     position: PopupPosition;
     buttonCollection: ButtonConfig[];
 };
 
-export type DefaultPopupData = SharedPopupData & {
-    type: Extract<PopupType, 'default'>;
-    title: string;
+export type TextPopupData = SharedPopupData & {
+    type: Extract<PopupType, 'text'>;
     text: string;
-    buttonCollection: ButtonConfig[];
 };
 
 export type CustomPopupData = SharedPopupData & {

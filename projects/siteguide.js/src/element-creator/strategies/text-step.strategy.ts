@@ -1,16 +1,15 @@
-import { DefaultPopupData } from '../../types/popup.type';
+import { Tour } from 'tour';
+import { TextPopupData } from '../../types/popup.type';
 import { createElement } from '../../utils/create-element.util';
 import { IUpdatePopup } from '../interfaces/update-popup.interface';
 import { updatePopupLayout } from '../utils/update-popup-layout.util';
 
-export class DefaultStepStrategy implements IUpdatePopup {
-    public updatePopupView(popupElement: HTMLElement, popupData: DefaultPopupData): void {
-        updatePopupLayout(popupElement, popupData);
+export class TextStepStrategy implements IUpdatePopup {
+    public updatePopupView(popup: HTMLElement, popupData: TextPopupData, tour: Tour): void {
+        updatePopupLayout(popup, popupData, tour);
 
-        const content: HTMLDivElement = popupElement.querySelector('.overview-content')!;
-
-        this.appendContent(content, 'h2', popupData.title, ['overview-title']);
-        this.appendContent(content, 'p', popupData.text, ['overview-description']);
+        const content: HTMLDivElement = popup.querySelector(`.${tour.config.classPrefix}-content`)!;
+        this.appendContent(content, 'p', popupData.text, [`${tour.config.classPrefix}-description`]);
     }
 
     /**
