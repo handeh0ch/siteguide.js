@@ -1,4 +1,4 @@
-import { Tour } from 'tour';
+import { Tour } from '../../tour';
 import { ButtonConfig } from '../../types/button-config.type';
 import { PopupData } from '../../types/popup.type';
 import { createElement } from '../../utils/create-element.util';

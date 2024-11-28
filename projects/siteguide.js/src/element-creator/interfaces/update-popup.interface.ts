@@ -1,4 +1,4 @@
-import { Tour } from 'tour';
+import { Tour } from '../../tour';
 import type { PopupData } from '../../types/popup.type';
 
 export interface IUpdatePopup {

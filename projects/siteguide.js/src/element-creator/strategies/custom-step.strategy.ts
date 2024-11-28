@@ -1,4 +1,4 @@
-import { Tour } from 'tour';
+import { Tour } from '../../tour';
 import type { CustomPopupData } from '../../types/popup.type';
 import { IUpdatePopup } from '../interfaces/update-popup.interface';
 import { updatePopupLayout } from '../utils/update-popup-layout.util';

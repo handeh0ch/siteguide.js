@@ -1,4 +1,4 @@
-import { Tour } from 'tour';
+import { Tour } from '../../tour';
 import { TextPopupData } from '../../types/popup.type';
 import { createElement } from '../../utils/create-element.util';
 import { IUpdatePopup } from '../interfaces/update-popup.interface';

@@ -79,7 +79,7 @@ export class Tour {
 
         const step: TourStep = new TourStep(this, config);
 
-        config.popup.buttonCollection.forEach((button: ButtonConfig) => (button.action = button.action.bind(this, {})));
+        config.popup.buttonCollection.forEach((button: ButtonConfig) => (button.action = button.action.bind(this)));
         this._stepList.push(step);
         this._stepMap.set(config.id, step);
     }
