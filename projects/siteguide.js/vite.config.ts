@@ -15,6 +15,7 @@ export default defineConfig({
         }),
     ],
     build: {
+        sourcemap: true,
         lib: {
             entry: path.resolve(__dirname, 'src/index.ts'),
             name: 'siteguide.js',
@@ -29,7 +30,7 @@ export default defineConfig({
             output: {
                 assetFileNames: (assetInfo: PreRenderedAsset): string => {
                     if (assetInfo.name?.endsWith('.css')) {
-                        return 'styles/siteguide.css';
+                        return 'css/siteguide.css';
                     }
                     return '[name].[ext]';
                 },
