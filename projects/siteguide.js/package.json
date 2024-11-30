@@ -1,6 +1,6 @@
 {
     "name": "siteguide.js",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Site guide and tours building lib",
     "license": "MIT",
     "keywords": [
@@ -20,12 +20,18 @@
         "name": "Borislav Shelanov",
         "email": "borislav.shelanov@gmail.com"
     },
-    "main": "dist/index.cjs",
-    "module": "dist/index.mjs",
-    "types": "dist/index.d.ts",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
     "type": "module",
     "exports": {
-        "./dist/styles/siteguide.css": "./dist/styles/siteguide.css"
+        ".": {
+            "types": "./dist/index.d.ts",
+            "require": "./dist/index.js",
+            "import": "./dist/index.mjs",
+            "default": "./dist/index.mjs"
+        },
+        "./dist/css/siteguide.css": "./dist/css/siteguide.css"
     },
     "files": [
         "dist"

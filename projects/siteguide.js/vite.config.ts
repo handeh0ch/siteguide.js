@@ -15,12 +15,16 @@ export default defineConfig({
         }),
     ],
     build: {
+        assetsDir: '',
+        outDir: 'dist',
+        target: 'ES6',
         lib: {
             entry: path.resolve(__dirname, 'src/index.ts'),
             name: 'siteguide.js',
             formats: ['es', 'cjs'],
             fileName: (format: string): string => {
                 format = format.replace('es', 'mjs');
+                format = format.replace('cjs', 'js');
 
                 return `index.${format}`;
             },
@@ -29,7 +33,7 @@ export default defineConfig({
             output: {
                 assetFileNames: (assetInfo: PreRenderedAsset): string => {
                     if (assetInfo.name?.endsWith('.css')) {
-                        return 'styles/siteguide.css';
+                        return 'css/siteguide.css';
                     }
                     return '[name].[ext]';
                 },
