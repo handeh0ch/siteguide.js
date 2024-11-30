@@ -15,13 +15,16 @@ export default defineConfig({
         }),
     ],
     build: {
-        sourcemap: true,
+        assetsDir: '',
+        outDir: 'dist',
+        target: 'ES6',
         lib: {
             entry: path.resolve(__dirname, 'src/index.ts'),
             name: 'siteguide.js',
             formats: ['es', 'cjs'],
             fileName: (format: string): string => {
                 format = format.replace('es', 'mjs');
+                format = format.replace('cjs', 'js');
 
                 return `index.${format}`;
             },
