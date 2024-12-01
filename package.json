@@ -11,7 +11,7 @@
     "description": "Siteguide.js monorepo",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Handehoch/siteguide.js.git"
+        "url": "git+https://github.com/handeh0ch/siteguide.git"
     },
     "author": {
         "name": "Borislav Shelanov",
