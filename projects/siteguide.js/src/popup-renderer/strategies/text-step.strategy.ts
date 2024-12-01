@@ -4,12 +4,19 @@ import { createElement } from '../../utils/create-element.util';
 import { IUpdatePopup } from '../interfaces/update-popup.interface';
 import { updatePopupLayout } from '../utils/update-popup-layout.util';
 
+/**
+ * TextStepStrategy class implements IUpdatePopup interface to handle custom popup content
+ */
 export class TextStepStrategy implements IUpdatePopup {
+    /** @inheritdoc */
     public updatePopupView(popup: HTMLElement, popupData: TextPopupData, tour: Tour): void {
         updatePopupLayout(popup, popupData, tour);
 
         const content: HTMLDivElement = popup.querySelector(`.${tour.config.classPrefix}-content`)!;
-        this.appendContent(content, 'p', popupData.text, [`${tour.config.classPrefix}-description`]);
+        this.appendContent(content, 'p', popupData.text, [
+            `${tour.config.classPrefix}-description`,
+            `${popupData.customization?.descriptionClass ?? ''}`,
+        ]);
     }
 
     /**

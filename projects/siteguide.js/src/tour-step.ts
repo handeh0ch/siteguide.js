@@ -1,12 +1,12 @@
 import { Tour } from './tour';
 import { PopupData } from './types/popup.type';
-import { HostData, StepId, TourStepConfig } from './types/tour-step-config.type';
+import { PopupHost, StepId, TourStepConfig } from './types/tour-step-config.type';
 import { isNullOrUndefined } from './utils/base.util';
 
 export class TourStep {
     public readonly id: StepId;
 
-    private readonly _hostData: HostData;
+    private readonly _hostData: PopupHost;
     private readonly _popupData: PopupData;
     private readonly _tour: Tour;
 
@@ -84,7 +84,7 @@ export class TourStep {
 
         this.updatePopupPosition();
 
-        this._hostElement?.scrollIntoView(this._tour.config.options.scrollTo);
+        this._hostElement?.scrollIntoView(this._tour.config.scrollTo);
     }
 
     private resolveHostElement(hostElement: string | HTMLElement): HTMLElement | null {

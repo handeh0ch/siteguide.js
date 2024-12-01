@@ -1,13 +1,14 @@
-import { DeepRequired } from 'types/utility.type';
-import { IUpdatePopup } from './element-creator/interfaces/update-popup.interface';
-import { CustomStepStrategy } from './element-creator/strategies/custom-step.strategy';
-import { TextStepStrategy } from './element-creator/strategies/text-step.strategy';
+import { IUpdatePopup } from './popup-renderer/interfaces/update-popup.interface';
+import { CustomStepStrategy } from './popup-renderer/strategies/custom-step.strategy';
+import { TextStepStrategy } from './popup-renderer/strategies/text-step.strategy';
 import { TourStep } from './tour-step';
-import { ButtonConfig } from './types/button-config.type';
+import { TourButtonConfig } from './types/button-config.type';
 import { PopupType } from './types/popup.type';
 import { TourConfig } from './types/tour-config.type';
 import { StepId, TourStepConfig } from './types/tour-step-config.type';
+import { DeepRequired } from './types/utility.type';
 import { createElement } from './utils/create-element.util';
+import { getCloseIconHTML } from './utils/get-close-icon.util';
 
 export class Tour {
     public get stepList(): readonly TourStep[] {
@@ -66,9 +67,13 @@ export class Tour {
 
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
-            options: {
-                scrollTo: config.options?.scrollTo ?? true,
+            allowClose: config.allowClose ?? true,
+            scrollTo: config.scrollTo ?? {
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center',
             },
+            closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
         };
     }
 
@@ -79,7 +84,7 @@ export class Tour {
 
         const step: TourStep = new TourStep(this, config);
 
-        config.popup.buttonCollection.forEach((button: ButtonConfig) => (button.action = button.action.bind(this)));
+        config.popup.buttonCollection.forEach((button: TourButtonConfig) => (button.action = button.action.bind(this)));
         this._stepList.push(step);
         this._stepMap.set(config.id, step);
     }
