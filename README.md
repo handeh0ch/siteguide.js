@@ -1,1 +1,1 @@
-# siteguide.js
+# Siteguide
