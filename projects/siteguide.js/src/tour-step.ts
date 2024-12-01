@@ -1,12 +1,12 @@
 import { Tour } from './tour';
 import { PopupData } from './types/popup.type';
-import { HostData, StepId, TourStepConfig } from './types/tour-step-config.type';
+import { PopupHost, StepId, TourStepConfig } from './types/tour-step-config.type';
 import { isNullOrUndefined } from './utils/base.util';
 
 export class TourStep {
     public readonly id: StepId;
 
-    private readonly _hostData: HostData;
+    private readonly _hostData: PopupHost;
     private readonly _popupData: PopupData;
     private readonly _tour: Tour;
 
@@ -36,17 +36,17 @@ export class TourStep {
 
         const position: string = this.resolvePopupPosition();
 
-        this._tour.helperElement!.style.position = position;
+        this._tour.helperLayout!.style.position = position;
 
-        this._tour.helperElement!.style.left = `${rect.left - paddingX}px`;
-        this._tour.helperElement!.style.top = `${rect.top - paddingY}px`;
-        this._tour.helperElement!.style.width = `${rect.width + 2 * paddingX}px`;
-        this._tour.helperElement!.style.height = `${rect.height + 2 * paddingY}px`;
+        this._tour.helperLayout!.style.left = `${rect.left - paddingX}px`;
+        this._tour.helperLayout!.style.top = `${rect.top - paddingY}px`;
+        this._tour.helperLayout!.style.width = `${rect.width + 2 * paddingX}px`;
+        this._tour.helperLayout!.style.height = `${rect.height + 2 * paddingY}px`;
 
-        this._tour.popupElement!.style.position = position;
+        this._tour.popup!.style.position = position;
 
-        const popupHeight: number = this._tour.popupElement!.offsetHeight;
-        const popupWidth: number = this._tour.popupElement!.offsetWidth;
+        const popupHeight: number = this._tour.popup!.offsetHeight;
+        const popupWidth: number = this._tour.popup!.offsetWidth;
         const viewportHeight: number = window.innerHeight;
         const viewportWidth: number = window.innerWidth;
 
@@ -69,8 +69,8 @@ export class TourStep {
             top = rect.top + window.scrollY;
         }
 
-        this._tour.popupElement!.style.left = `${left}px`;
-        this._tour.popupElement!.style.top = `${top}px`;
+        this._tour.popup!.style.left = `${left}px`;
+        this._tour.popup!.style.top = `${top}px`;
     }
 
     private updatePopup(): void {
@@ -80,15 +80,11 @@ export class TourStep {
 
         this._tour.updatePopupStrategies
             .get(this._popupData.type)!
-            .updatePopupView(this._tour.popupElement!, this._popupData);
+            .updatePopupView(this._tour.popup!, this._popupData, this._tour);
 
         this.updatePopupPosition();
 
-        this._hostElement?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center',
-        });
+        this._hostElement?.scrollIntoView(this._tour.config.scrollTo);
     }
 
     private resolveHostElement(hostElement: string | HTMLElement): HTMLElement | null {

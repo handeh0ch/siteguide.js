@@ -5,8 +5,10 @@
 !.stylelintrc
 !vite.config.ts
 !api-extractor.json
+!LICENSE
 !package-lock.json
 !package.json
+!README.md
 !tsconfig.json
 !tsconfig.node.json
 !src/
