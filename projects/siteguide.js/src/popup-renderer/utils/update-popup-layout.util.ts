@@ -1,6 +1,7 @@
+import { Tour } from '../../tour';
 import { TourButtonConfig } from '../../types/button-config.type';
 import { PopupData } from '../../types/popup.type';
-import { PopupCloseIconElement, RequiredTourConfig } from '../../types/tour-config.type';
+import { PopupCloseIconElement } from '../../types/tour-config.type';
 import { isNullOrUndefined } from '../../utils/base.util';
 import { createElement } from '../../utils/create-element.util';
 
@@ -9,57 +10,62 @@ import { createElement } from '../../utils/create-element.util';
  * such as a header, exit button, content area, and a collection of buttons.
  * @param {HTMLElement} popup - The popup element to be updated.
  * @param {PopupData} popupData - The data containing configuration for the popup, including button configurations.
- * @param {RequiredTourConfig} tourConfig - The configuration object for the tour.
- * @param {() => void} closeClick - The function to be called when the close button is clicked.
+ * @param {Tour} tour - The tour instance.
  */
-export function updatePopupLayout(
-    popup: HTMLElement,
-    popupData: PopupData,
-    tourConfig: RequiredTourConfig,
-    closeClick: () => void
-): void {
+export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: Tour): void {
     popup.innerHTML = '';
+    popup.className = `${tour.config.classPrefix}`;
+
+    if (popupData.customization?.class) {
+        popup.classList.add(popupData.customization.class);
+    }
 
     const header: HTMLDivElement = createElement('div', [
-        `${tourConfig.classPrefix}-header`,
+        `${tour.config.classPrefix}-header`,
         `${popupData.customization?.headerClass ?? ''}`,
     ]);
     popup.appendChild(header);
 
     const title: HTMLHeadElement = createElement('h1', [
-        `${tourConfig.classPrefix}-title`,
+        `${tour.config.classPrefix}-title`,
         `${popupData.customization?.titleClass ?? ''}`,
     ]);
     title.innerHTML = popupData.title ?? '';
     header.appendChild(title);
 
-    if (tourConfig.allowClose) {
+    if (tour.config.allowClose) {
         const closeButton: HTMLButtonElement = createElement('button', [
-            `${tourConfig.classPrefix}-close`,
+            `${tour.config.classPrefix}-close`,
             `${popupData.customization?.closeButtonClass ?? ''}`,
         ]);
-        resolveCloseIcon(closeButton, tourConfig.closeIcon);
-        closeButton.onclick = closeClick;
+        resolveCloseIcon(closeButton, tour.config.closeIcon);
+        closeButton.onclick = tour.complete.bind(tour);
         header.appendChild(closeButton);
     }
 
     const content: HTMLDivElement = createElement('div', [
-        `${tourConfig.classPrefix}-content`,
+        `${tour.config.classPrefix}-content`,
         `${popupData.customization?.contentClass ?? ''}`,
     ]);
     popup.appendChild(content);
 
-    const buttonCollection: HTMLDivElement = createElement('div', [
-        `${tourConfig.classPrefix}-footer`,
+    const buttonList: HTMLDivElement = createElement('div', [
+        `${tour.config.classPrefix}-footer`,
         `${popupData.customization?.footerClass ?? ''}`,
     ]);
 
-    popupData.buttonCollection.forEach((button: TourButtonConfig) => {
-        const buttonClassList: string[] = [`${tourConfig.classPrefix}-button`, button.class ?? ''];
+    if (isNullOrUndefined(popupData.buttonList)) {
+        popupData.buttonList = getDefaultButtonList(tour);
+    }
+
+    popupData.buttonList.forEach((button: TourButtonConfig) => {
+        button.action = button.action.bind(tour);
+
+        const buttonClassList: string[] = [`${tour.config.classPrefix}-button`, button.class ?? ''];
         if (isNullOrUndefined(button.type) || button.type === 'secondary') {
-            buttonClassList.push(`${tourConfig.classPrefix}-button-secondary`);
+            buttonClassList.push(`${tour.config.classPrefix}-button-secondary`);
         } else if (button.type === 'primary') {
-            buttonClassList.push(`${tourConfig.classPrefix}-button-primary`);
+            buttonClassList.push(`${tour.config.classPrefix}-button-primary`);
         }
 
         if (!isNullOrUndefined(button.class) && button.class !== '') {
@@ -74,10 +80,10 @@ export function updatePopupLayout(
             button.action();
         };
 
-        buttonCollection.appendChild(buttonElement);
+        buttonList.appendChild(buttonElement);
     });
 
-    popup.appendChild(buttonCollection);
+    popup.appendChild(buttonList);
 }
 
 /**
@@ -91,4 +97,23 @@ function resolveCloseIcon(closeButton: HTMLButtonElement, icon: PopupCloseIconEl
     } else {
         closeButton.innerHTML = icon.innerHTML;
     }
+}
+
+/**
+ * Returns the default button list for the tour.
+ * @param {Tour} tour - The tour instance.
+ * @returns {TourButtonConfig[]} The default button configurations.
+ */
+function getDefaultButtonList(tour: Tour): TourButtonConfig[] {
+    return [
+        {
+            text: 'Back',
+            action: tour.prev,
+        },
+        {
+            text: 'Next',
+            type: 'primary',
+            action: tour.next,
+        },
+    ];
 }

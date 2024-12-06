@@ -36,7 +36,7 @@ export type SharedPopupData = {
     /**
      * A collection of button configurations for the popup
      */
-    buttonCollection: TourButtonConfig[];
+    buttonList?: TourButtonConfig[];
 };
 
 /**

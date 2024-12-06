@@ -2,7 +2,6 @@ import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.rend
 import { HelperLayoutRenderer } from './popup-renderer/helper-layout.renderer';
 import { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
-import { TourButtonConfig } from './types/button-config.type';
 import { RequiredTourConfig, TourConfig } from './types/tour-config.type';
 import { StepId, TourStepConfig } from './types/tour-step-config.type';
 import { isDefined } from './utils/base.util';
@@ -66,7 +65,6 @@ export class Tour {
 
         const step: TourStep = new TourStep(this, config);
 
-        config.popup.buttonCollection.forEach((button: TourButtonConfig) => (button.action = button.action.bind(this)));
         this._stepList.push(step);
         this._stepMap.set(config.id, step);
     }
@@ -84,9 +82,6 @@ export class Tour {
         document.body.appendChild(this._popup);
 
         this._helperLayout = createElement('div', [`${this._config.classPrefix}-helper`]);
-        this._helperLayout.addEventListener('click', () => {
-            this.complete();
-        });
         document.body.appendChild(this._helperLayout);
 
         this.next();
@@ -102,10 +97,14 @@ export class Tour {
         if (this._helperLayout) {
             document.body.removeChild(this._helperLayout);
         }
+
+        this._currentStep = null;
     }
 
     public prev(): void {
-        const stepIndex: number = this._stepList.indexOf(this._currentStep!) - 1;
+        const stepIndex: number = isDefined(this._currentStep)
+            ? this._stepList.indexOf(this._currentStep) - 1
+            : this._stepList.indexOf(this._stepList[this._stepList.length - 1]);
 
         if (stepIndex < 0) {
             this.complete();
@@ -117,7 +116,9 @@ export class Tour {
     }
 
     public next(): void {
-        const stepIndex: number = this._stepList.indexOf(this._currentStep!) + 1;
+        const stepIndex: number = isDefined(this._currentStep)
+            ? this._stepList.indexOf(this._currentStep) + 1
+            : this._stepList.indexOf(this._stepList[0]);
 
         if (stepIndex >= this._stepList.length) {
             this.complete();

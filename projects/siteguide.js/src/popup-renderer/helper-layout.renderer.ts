@@ -13,7 +13,8 @@ export class HelperLayoutRenderer implements IRenderer {
         const paddingX: number = 8;
         const paddingY: number = 8;
 
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollTop: number =
+            helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;
 
         helper.style.left = `${rect.left - paddingX}px`;
         helper.style.top = `${rect.top + scrollTop - paddingY}px`;

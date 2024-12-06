@@ -21,7 +21,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
         }
 
         popup.style.position = getPositionType(step.hostElement!);
-        updatePopupLayout(popup, step.popupData, step.tour.config, step.tour.complete.bind(step.tour));
+        updatePopupLayout(popup, step.popupData, step.tour);
         this._renderContentStrategy.get(step.popupData.type)?.renderContent(popup, step.popupData, step.tour.config);
 
         this.updatePosition(popup, step);
@@ -29,6 +29,9 @@ export class FloatingUiPopupRenderer implements IRenderer {
     }
 
     public updatePosition(popup: HTMLElement, step: TourStep): void {
+        const scrollTop: number =
+            popup.style.position === 'fixed' ? window.scrollY || document.documentElement.scrollTop : 0;
+
         computePosition(step.hostElement!, popup, {
             middleware: [
                 autoPlacement({
@@ -38,7 +41,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
             ],
         }).then(({ x, y }) => {
             Object.assign(popup.style, {
-                top: `${y}px`,
+                top: `${y - scrollTop}px`,
                 left: `${x}px`,
             });
         });

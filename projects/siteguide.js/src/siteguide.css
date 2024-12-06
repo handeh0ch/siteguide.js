@@ -59,6 +59,7 @@
     padding: 12px;
     border-top: 1px solid #e1dfdf;
     gap: 16px;
+    margin-top: auto;
 }
 
 .siteguide-button {
