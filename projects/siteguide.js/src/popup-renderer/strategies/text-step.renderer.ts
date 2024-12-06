@@ -1,20 +1,17 @@
-import { Tour } from '../../tour';
+import { RequiredTourConfig } from 'types/tour-config.type';
 import { TextPopupData } from '../../types/popup.type';
 import { createElement } from '../../utils/create-element.util';
-import { IUpdatePopup } from '../interfaces/update-popup.interface';
-import { updatePopupLayout } from '../utils/update-popup-layout.util';
+import { IPopupContentRenderer } from '../interfaces/popup-content-renderer.interface';
 
 /**
  * TextStepStrategy class implements IUpdatePopup interface to handle custom popup content
  */
-export class TextStepStrategy implements IUpdatePopup {
+export class TextStepRenderer implements IPopupContentRenderer {
     /** @inheritdoc */
-    public updatePopupView(popup: HTMLElement, popupData: TextPopupData, tour: Tour): void {
-        updatePopupLayout(popup, popupData, tour);
-
-        const content: HTMLDivElement = popup.querySelector(`.${tour.config.classPrefix}-content`)!;
+    public renderContent(popup: HTMLElement, popupData: TextPopupData, tourConfig: RequiredTourConfig): void {
+        const content: HTMLDivElement = popup.querySelector(`.${tourConfig.classPrefix}-content`)!;
         this.appendContent(content, 'p', popupData.text, [
-            `${tour.config.classPrefix}-description`,
+            `${tourConfig.classPrefix}-description`,
             `${popupData.customization?.descriptionClass ?? ''}`,
         ]);
     }

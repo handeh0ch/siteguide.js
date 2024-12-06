@@ -1,7 +1,7 @@
 {
     "name": "siteguide.js",
-    "version": "0.2.1-alpha",
-    "description": "Web-site guides and tours building lib",
+    "version": "0.3.0",
+    "description": "Web-site guides and onboarding tours building lib",
     "license": "MIT",
     "keywords": [
         "siteguide",
@@ -15,7 +15,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/handeh0ch/siteguide.git"
+        "url": "git+https://github.com/handeh0ch/siteguide.js.git"
     },
     "author": {
         "name": "Borislav Shelanov",
@@ -53,6 +53,9 @@
         "lint:styles": "stylelint ./**/*.{css,scss}",
         "format:scripts": "prettier ./src --write",
         "format:styles": "stylelint ./**/*.{css,scss} --fix"
+    },
+    "dependencies": {
+        "@floating-ui/dom": "^1.6.12"
     },
     "devDependencies": {
         "@types/node": "^22.9.1",

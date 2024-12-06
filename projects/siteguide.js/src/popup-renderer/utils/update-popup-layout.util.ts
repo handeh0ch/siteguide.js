@@ -1,7 +1,6 @@
-import { Tour } from '../../tour';
 import { TourButtonConfig } from '../../types/button-config.type';
 import { PopupData } from '../../types/popup.type';
-import { PopupCloseIconElement } from '../../types/tour-config.type';
+import { PopupCloseIconElement, RequiredTourConfig } from '../../types/tour-config.type';
 import { isNullOrUndefined } from '../../utils/base.util';
 import { createElement } from '../../utils/create-element.util';
 
@@ -10,53 +9,57 @@ import { createElement } from '../../utils/create-element.util';
  * such as a header, exit button, content area, and a collection of buttons.
  * @param {HTMLElement} popup - The popup element to be updated.
  * @param {PopupData} popupData - The data containing configuration for the popup, including button configurations.
- * @param {Tour} tour - The tour object that manages the tour steps and layout.
+ * @param {RequiredTourConfig} tourConfig - The configuration object for the tour.
+ * @param {() => void} closeClick - The function to be called when the close button is clicked.
  */
-export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: Tour): void {
+export function updatePopupLayout(
+    popup: HTMLElement,
+    popupData: PopupData,
+    tourConfig: RequiredTourConfig,
+    closeClick: () => void
+): void {
     popup.innerHTML = '';
 
     const header: HTMLDivElement = createElement('div', [
-        `${tour.config.classPrefix}-header`,
+        `${tourConfig.classPrefix}-header`,
         `${popupData.customization?.headerClass ?? ''}`,
     ]);
     popup.appendChild(header);
 
     const title: HTMLHeadElement = createElement('h1', [
-        `${tour.config.classPrefix}-title`,
+        `${tourConfig.classPrefix}-title`,
         `${popupData.customization?.titleClass ?? ''}`,
     ]);
     title.innerHTML = popupData.title ?? '';
     header.appendChild(title);
 
-    if (tour.config.allowClose) {
+    if (tourConfig.allowClose) {
         const closeButton: HTMLButtonElement = createElement('button', [
-            `${tour.config.classPrefix}-close`,
+            `${tourConfig.classPrefix}-close`,
             `${popupData.customization?.closeButtonClass ?? ''}`,
         ]);
-        resolveCloseIcon(closeButton, tour.config.closeIcon);
-        closeButton.onclick = () => {
-            tour.complete();
-        };
+        resolveCloseIcon(closeButton, tourConfig.closeIcon);
+        closeButton.onclick = closeClick;
         header.appendChild(closeButton);
     }
 
     const content: HTMLDivElement = createElement('div', [
-        `${tour.config.classPrefix}-content`,
+        `${tourConfig.classPrefix}-content`,
         `${popupData.customization?.contentClass ?? ''}`,
     ]);
     popup.appendChild(content);
 
     const buttonCollection: HTMLDivElement = createElement('div', [
-        `${tour.config.classPrefix}-footer`,
+        `${tourConfig.classPrefix}-footer`,
         `${popupData.customization?.footerClass ?? ''}`,
     ]);
 
     popupData.buttonCollection.forEach((button: TourButtonConfig) => {
-        const buttonClassList: string[] = [`${tour.config.classPrefix}-button`, button.class ?? ''];
+        const buttonClassList: string[] = [`${tourConfig.classPrefix}-button`, button.class ?? ''];
         if (isNullOrUndefined(button.type) || button.type === 'secondary') {
-            buttonClassList.push(`${tour.config.classPrefix}-button-secondary`);
+            buttonClassList.push(`${tourConfig.classPrefix}-button-secondary`);
         } else if (button.type === 'primary') {
-            buttonClassList.push(`${tour.config.classPrefix}-button-primary`);
+            buttonClassList.push(`${tourConfig.classPrefix}-button-primary`);
         }
 
         if (!isNullOrUndefined(button.class) && button.class !== '') {

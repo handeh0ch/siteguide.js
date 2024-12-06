@@ -1,3 +1,5 @@
+import { DeepRequired } from './utility.type';
+
 export type PopupCloseIconElement = InnerHTML | HTMLElement;
 
 /**
@@ -27,3 +29,9 @@ export type TourConfig = {
      */
     closeIcon?: PopupCloseIconElement;
 };
+
+/**
+ * Represents a required tour configuration.
+ * This type ensures all properties of the TourConfig are required.
+ */
+export type RequiredTourConfig = DeepRequired<TourConfig>;
