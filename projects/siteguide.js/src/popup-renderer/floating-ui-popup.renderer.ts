@@ -1,6 +1,7 @@
 import { autoPlacement, computePosition, offset } from '@floating-ui/dom';
 import { TourStep } from '../tour-step';
 import { PopupType } from '../types/popup.type';
+import { getPositionType } from '../utils/is-fixed.util';
 import { IPopupContentRenderer } from './interfaces/popup-content-renderer.interface';
 import { IRenderer } from './interfaces/renderer.interface';
 import { CustomStepRenderer } from './strategies/custom-step.renderer';
@@ -19,6 +20,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
             throw new Error('Missing popup creator strategy');
         }
 
+        popup.style.position = getPositionType(step.hostElement!);
         updatePopupLayout(popup, step.popupData, step.tour.config, step.tour.complete.bind(step.tour));
         this._renderContentStrategy.get(step.popupData.type)?.renderContent(popup, step.popupData, step.tour.config);
 

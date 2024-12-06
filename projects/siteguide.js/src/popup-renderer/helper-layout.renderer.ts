@@ -1,8 +1,10 @@
 import { TourStep } from '../tour-step';
+import { getPositionType } from '../utils/is-fixed.util';
 import { IRenderer } from './interfaces/renderer.interface';
 
 export class HelperLayoutRenderer implements IRenderer {
     public render(helper: HTMLElement, step: TourStep): void {
+        helper.style.position = getPositionType(step.hostElement!);
         this.updatePosition(helper, step);
     }
 
