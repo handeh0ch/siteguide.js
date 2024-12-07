@@ -1,13 +1,31 @@
-.siteguide {
+:root {
+    --bg: #f8f9fa;
+    --text: #212529;
+    --primary: #343a40;
+    --primary-hover: #495057;
+    --secondary: #ced4da;
+    --secondary-hover: #dee2e6;
+    --line: #dee2e6;
+    --padding-s: 8px;
+    --padding-m: 12px;
+    --padding-l: 16px;
+    --padding-2l: 20px;
+}
+
+* {
+    color: var(--text);
     box-sizing: border-box;
+}
+
+.siteguide {
     width: 280px;
-    background-color: #fffafa;
+    background-color: var(--bg);
     border-radius: 8px;
-    border: 1px solid #e1dfdf;
+    border: 1px solid var(--line);
     display: flex;
     flex-direction: column;
     position: absolute;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Helvetica, sans-serif;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.066);
     z-index: 1000001;
     transition: all 0.3s ease-out;
@@ -17,11 +35,10 @@
     box-shadow:
         0 0 0 0 rgba(33, 33, 33, 0.8),
         0 0 0 5000px rgba(33, 33, 33, 0.5);
-    border: 2px solid rgba(33, 33, 33, 0.8);
+    border: 2px solid var(--primary);
     border-radius: 4px;
     opacity: 1;
     z-index: 1000000;
-    box-sizing: border-box;
     position: absolute;
     transition: all 0.3s ease-out;
     pointer-events: none;
@@ -31,25 +48,25 @@
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 12px 20px 0;
+    padding: var(--padding-m) var(--padding-2l) 0;
 }
 
 .siteguide-content {
     width: 100%;
-    padding: 12px 20px;
+    padding: var(--padding-m) var(--padding-2l);
 }
 
 .siteguide-title {
     display: block;
     font-size: 18px;
     font-weight: 800;
-    color: #222;
+    color: var(--text);
 }
 
 .siteguide-description {
     font-size: 14px;
     font-weight: 400;
-    color: #222;
+    color: var(--text);
 }
 
 .siteguide-footer {
@@ -57,37 +74,38 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px;
-    border-top: 1px solid #e1dfdf;
-    gap: 16px;
+    padding: var(--padding-m);
+    border-top: 1px solid var(--line);
+    gap: var(--padding-l);
     margin-top: auto;
 }
 
 .siteguide-button {
-    padding: 8px 16px;
+    padding: var(--padding-s) var(--padding-l);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
     line-height: 20px;
+    transition: background-color 0.3s ease-out;
 }
 
 .siteguide-button-secondary {
-    background-color: #e1dfdf;
-    color: #222;
+    background-color: var(--line);
+    color: var(--text);
 }
 
 .siteguide-button-secondary:hover {
-    background-color: #ddd;
+    background-color: var(--secondary-hover);
 }
 
 .siteguide-button-primary {
-    background-color: #222;
+    background-color: var(--primary);
     color: #fff;
 }
 
 .siteguide-button-primary:hover {
-    background-color: #000;
+    background-color: var(--primary-hover);
 }
 
 .siteguide-close {
@@ -105,7 +123,7 @@
 }
 
 .siteguide-close:hover {
-    background-color: #ddd;
+    background-color: var(--secondary-hover);
     color: #fff;
 }
 
