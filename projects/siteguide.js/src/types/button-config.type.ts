@@ -7,7 +7,13 @@ export type TourButtonType = 'primary' | 'secondary';
  * Represents the configuration for a button
  */
 export type TourButtonConfig = {
+    /**
+     * The text to display on the button
+     */
     text: string;
+    /**
+     * The type of the button, which can be 'primary' or 'secondary'
+     */
     type?: TourButtonType;
     /**
      * Additional CSS class to apply to the button

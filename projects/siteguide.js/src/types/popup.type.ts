@@ -1,5 +1,4 @@
 import type { TourButtonConfig } from './button-config.type';
-
 /**
  * Represents the data for a popup
  */
@@ -13,7 +12,20 @@ export type PopupType = 'text' | 'custom';
 /**
  * The position of a popup
  */
-export type PopupPosition = 'top' | 'bottom' | 'left' | 'right';
+export type PopupPosition =
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-end'
+    | 'left-start'
+    | 'right-end'
+    | 'right-start';
 
 /**
  * Represents the shared data for a popup, including title, position, customization, and button collection.
@@ -25,6 +37,7 @@ export type SharedPopupData = {
     title?: string;
     /**
      * The position of the popup
+     * @default 'auto'
      */
     position?: PopupPosition;
     /**

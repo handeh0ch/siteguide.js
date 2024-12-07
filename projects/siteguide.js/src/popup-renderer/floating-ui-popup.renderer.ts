@@ -1,6 +1,7 @@
-import { autoPlacement, computePosition, offset } from '@floating-ui/dom';
+import { autoPlacement, computePosition, Middleware, offset, Placement } from '@floating-ui/dom';
 import { TourStep } from '../tour-step';
 import { PopupType } from '../types/popup.type';
+import { isDefined, isNullOrUndefined } from '../utils/base.util';
 import { getPositionType } from '../utils/is-fixed.util';
 import { IPopupContentRenderer } from './interfaces/popup-content-renderer.interface';
 import { IRenderer } from './interfaces/renderer.interface';
@@ -32,13 +33,19 @@ export class FloatingUiPopupRenderer implements IRenderer {
         const scrollTop: number =
             popup.style.position === 'fixed' ? window.scrollY || document.documentElement.scrollTop : 0;
 
+        const middleware: Middleware[] = [];
+        const placement: Placement | undefined =
+            isDefined(step.popupData.position) && step.popupData.position !== 'auto'
+                ? (step.popupData.position as Placement)
+                : undefined;
+
+        if (step.popupData.position === 'auto' || isNullOrUndefined(placement)) {
+            middleware.push(autoPlacement());
+        }
+
         computePosition(step.hostElement!, popup, {
-            middleware: [
-                autoPlacement({
-                    allowedPlacements: ['left', 'top', 'right', 'bottom'],
-                }),
-                offset(20),
-            ],
+            placement: placement,
+            middleware: [...middleware, offset(20)],
         }).then(({ x, y }) => {
             Object.assign(popup.style, {
                 top: `${y - scrollTop}px`,
