@@ -55,6 +55,10 @@ export class Tour {
                 inline: 'center',
             },
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
+            helperLayout: {
+                paddingX: config.helperLayout?.paddingX ?? 8,
+                paddingY: config.helperLayout?.paddingY ?? 8,
+            },
         };
     }
 

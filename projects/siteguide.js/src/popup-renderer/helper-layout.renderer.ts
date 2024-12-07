@@ -10,8 +10,8 @@ export class HelperLayoutRenderer implements IRenderer {
 
     public updatePosition(helper: HTMLElement, step: TourStep): void {
         const rect: DOMRect = step.hostElement!.getBoundingClientRect();
-        const paddingX: number = 8;
-        const paddingY: number = 8;
+        const paddingX: number = step.tour.config.helperLayout?.paddingX ?? 8;
+        const paddingY: number = step.tour.config.helperLayout?.paddingY ?? 8;
 
         const scrollTop: number =
             helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;

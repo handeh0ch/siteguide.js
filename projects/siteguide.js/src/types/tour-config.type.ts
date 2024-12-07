@@ -28,6 +28,21 @@ export type TourConfig = {
      * The element or HTML to use as the close icon
      */
     closeIcon?: PopupCloseIconElement;
+    /**
+     * Configuration for the helper layout.
+     */
+    helperLayout?: {
+        /**
+         * The horizontal padding for the helper layout.
+         * @default 8
+         */
+        paddingX?: number;
+        /**
+         * The vertical padding for the helper layout.
+         * @default 8
+         */
+        paddingY?: number;
+    };
 };
 
 /**
