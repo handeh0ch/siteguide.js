@@ -1,4 +1,4 @@
-import { Position } from '../types/position.type';
+import type { Position } from '../types/position.type';
 
 /**
  * Determines if the specified HTMLElement or any of its ancestors have a fixed position.

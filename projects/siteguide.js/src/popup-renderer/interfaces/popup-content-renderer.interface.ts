@@ -1,5 +1,5 @@
-import { RequiredTourConfig } from 'types/tour-config.type';
 import type { PopupData } from '../../types/popup.type';
+import type { RequiredTourConfig } from '../../types/tour-config.type';
 
 /**
  * Interface for rendering popup content

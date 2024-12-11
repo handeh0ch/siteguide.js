@@ -1,4 +1,4 @@
-import { DeepRequired } from './utility.type';
+import type { DeepRequired } from './utility.type';
 
 export type PopupCloseIconElement = InnerHTML | HTMLElement;
 

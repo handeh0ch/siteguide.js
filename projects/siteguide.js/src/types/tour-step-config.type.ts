@@ -1,4 +1,4 @@
-import { PopupData } from './popup.type';
+import type { PopupData } from './popup.type';
 
 /**
  * Represents the host of a tour step. It can be a string, an HTMLElement, or a function that returns either an HTMLElement or a string.

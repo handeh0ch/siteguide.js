@@ -1,10 +1,10 @@
-import { TourStep } from '../tour-step';
+import { ITourStep } from 'interfaces/tour.interface';
 import { getPositionType } from '../utils/is-fixed.util';
-import { IRenderer } from './interfaces/renderer.interface';
+import type { IRenderer } from './interfaces/renderer.interface';
 
 export class HelperLayoutRenderer implements IRenderer {
     /** @inheritdoc */
-    public render(helper: HTMLElement, step: TourStep): Promise<void> {
+    public render(helper: HTMLElement, step: ITourStep): Promise<void> {
         return new Promise<void>((resolve) => {
             if (step.hostElement) {
                 helper.style.position = getPositionType(step.hostElement);
@@ -17,7 +17,7 @@ export class HelperLayoutRenderer implements IRenderer {
     }
 
     /** @inheritdoc */
-    public updatePosition(helper: HTMLElement, step: TourStep): void {
+    public updatePosition(helper: HTMLElement, step: ITourStep): void {
         if (!step.hostElement) {
             helper.style.width = '0';
             helper.style.height = '0';

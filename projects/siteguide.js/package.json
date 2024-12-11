@@ -52,7 +52,8 @@
         "lint:scripts": "eslint ./src --ext .ts",
         "lint:styles": "stylelint ./**/*.{css,scss}",
         "format:scripts": "prettier ./src --write",
-        "format:styles": "stylelint ./**/*.{css,scss} --fix"
+        "format:styles": "stylelint ./**/*.{css,scss} --fix",
+        "check-circular": "madge --circular --extensions ts ./src"
     },
     "dependencies": {
         "@floating-ui/dom": "^1.6.12"

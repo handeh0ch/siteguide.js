@@ -1,16 +1,18 @@
+import type { ITourStep } from 'interfaces/tour.interface';
+import { ITour } from 'interfaces/tour.interface';
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
 import { HelperLayoutRenderer } from './popup-renderer/helper-layout.renderer';
-import { IRenderer } from './popup-renderer/interfaces/renderer.interface';
+import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
-import { RequiredTourConfig, TourConfig } from './types/tour-config.type';
-import { StepId, TourStepConfig } from './types/tour-step-config.type';
+import type { RequiredTourConfig, TourConfig } from './types/tour-config.type';
+import type { StepId, TourStepConfig } from './types/tour-step-config.type';
 import { isDefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { getCloseIconHTML } from './utils/get-close-icon.util';
 
-export class Tour {
-    public get stepList(): readonly TourStep[] {
-        return this._stepList as Readonly<TourStep[]>;
+export class Tour implements ITour {
+    public get stepList(): readonly ITourStep[] {
+        return this._stepList as Readonly<ITourStep[]>;
     }
 
     public get config(): RequiredTourConfig {
@@ -37,8 +39,8 @@ export class Tour {
     private _popup: HTMLElement | null = null;
     private _helperLayout: HTMLElement | null = null;
 
-    private _stepList: TourStep[] = [];
-    private _activeStep: TourStep | null = null;
+    private _stepList: ITourStep[] = [];
+    private _activeStep: ITourStep | null = null;
     private _bodyResizeObserver: ResizeObserver;
     private readonly _config: RequiredTourConfig;
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
@@ -78,7 +80,7 @@ export class Tour {
     }
 
     public removeStep(stepId: StepId): void {
-        this._stepList = this._stepList.filter((step: TourStep) => stepId !== step.id);
+        this._stepList = this._stepList.filter((step: ITourStep) => stepId !== step.id);
 
         this._stepMap.delete(stepId);
     }
