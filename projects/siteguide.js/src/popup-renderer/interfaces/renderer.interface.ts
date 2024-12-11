@@ -9,7 +9,7 @@ export interface IRenderer {
      * @param {HTMLElement} popup - The popup element to render content into
      * @param {TourStep} step - The tour step for which to render the popup content
      */
-    render(popup: HTMLElement, step: TourStep): void;
+    render(popup: HTMLElement, step: TourStep): Promise<void>;
 
     /**
      * Updates the position of the popup based on the step's host element

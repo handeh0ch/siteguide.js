@@ -2,9 +2,25 @@ import { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { Tour } from './tour';
 import { PopupData } from './types/popup.type';
 import { PopupHost, StepId, TourStepConfig } from './types/tour-step-config.type';
-import { isNullOrUndefined } from './utils/base.util';
+import { isDefined, isNullOrUndefined } from './utils/base.util';
 
 export class TourStep {
+    public get isFirst(): boolean {
+        return this.tour.stepList.indexOf(this) === 0;
+    }
+
+    public get nextStep(): TourStep | null {
+        return this.tour.stepList[this.tour.stepList.indexOf(this) + 1] ?? null;
+    }
+
+    public get prevStep(): TourStep | null {
+        return this.tour.stepList[this.tour.stepList.indexOf(this) - 1] ?? null;
+    }
+
+    public get hasHost(): boolean {
+        return isDefined(this._hostElement);
+    }
+
     public get hostElement(): HTMLElement | null {
         return this._hostElement;
     }
@@ -15,7 +31,7 @@ export class TourStep {
 
     private _hostElement: HTMLElement | null = null;
 
-    private readonly _hostData: PopupHost;
+    private readonly _hostData: PopupHost | undefined;
     private readonly _popupRenderer: IRenderer;
     private readonly _helperRenderer: IRenderer;
 
@@ -28,17 +44,21 @@ export class TourStep {
         this._helperRenderer = tour.helperRenderer;
     }
 
-    public show(): void {
+    public async show(): Promise<void> {
         if (isNullOrUndefined(this.tour.popup) || isNullOrUndefined(this.tour.helperLayout)) {
             return;
         }
 
-        this._hostElement = this.resolveHostElement(
-            typeof this._hostData === 'function' ? this._hostData() : this._hostData
-        );
+        if (this._hostData) {
+            this._hostElement = this.resolveHostElement(
+                typeof this._hostData === 'function' ? this._hostData() : (this._hostData ?? null)
+            );
+        }
 
-        this._popupRenderer.render(this.tour.popup, this);
-        this._helperRenderer.render(this.tour.helperLayout, this);
+        await Promise.all([
+            this._helperRenderer.render(this.tour.helperLayout, this),
+            this._popupRenderer.render(this.tour.popup, this),
+        ]);
     }
 
     private resolveHostElement(hostElement: string | HTMLElement): HTMLElement | null {

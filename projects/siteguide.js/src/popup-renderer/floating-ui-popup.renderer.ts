@@ -1,7 +1,7 @@
 import { autoPlacement, computePosition, Middleware, offset, Placement } from '@floating-ui/dom';
 import { TourStep } from '../tour-step';
 import { PopupType } from '../types/popup.type';
-import { isDefined, isNullOrUndefined } from '../utils/base.util';
+import { delay, isDefined, isNullOrUndefined } from '../utils/base.util';
 import { getPositionType } from '../utils/is-fixed.util';
 import { IPopupContentRenderer } from './interfaces/popup-content-renderer.interface';
 import { IRenderer } from './interfaces/renderer.interface';
@@ -16,19 +16,47 @@ export class FloatingUiPopupRenderer implements IRenderer {
         this.setUpStrategies();
     }
 
-    public render(popup: HTMLElement, step: TourStep): void {
-        if (!this._renderContentStrategy.has(step.popupData.type)) {
-            throw new Error('Missing popup creator strategy');
-        }
+    /** @inheritdoc */
+    public render(popup: HTMLElement, step: TourStep): Promise<void> {
+        return new Promise<void>((resolve) => {
+            if (!this._renderContentStrategy.has(step.popupData.type)) {
+                throw new Error('Missing popup creator strategy');
+            }
 
-        popup.style.position = getPositionType(step.hostElement!);
-        updatePopupLayout(popup, step.popupData, step.tour);
-        this._renderContentStrategy.get(step.popupData.type)?.renderContent(popup, step.popupData, step.tour.config);
+            popup.style.animation = 'none';
+            popup.style.opacity = '0';
+            if (step.hostElement) {
+                popup.style.position = getPositionType(step.hostElement);
+            } else {
+                popup.style.position = 'fixed';
+            }
 
-        this.updatePosition(popup, step);
-        step.hostElement?.scrollIntoView(step.tour.config.scrollTo);
+            updatePopupLayout(popup, step.popupData, step.tour);
+            this._renderContentStrategy
+                .get(step.popupData.type)
+                ?.renderContent(popup, step.popupData, step.tour.config);
+            step.hostElement?.scrollIntoView(step.tour.config.scrollTo);
+            resolve();
+        })
+            .then(() => {
+                if (
+                    step.isFirst ||
+                    (!step.hasHost && !step.prevStep?.hasHost) ||
+                    (!step.hasHost && !step.nextStep?.hasHost)
+                ) {
+                    return Promise.resolve();
+                }
+
+                return delay(400);
+            })
+            .then(() => {
+                this.updatePosition(popup, step);
+                popup.style.opacity = '1';
+                popup.style.animation = 'fadeIn 0.3s ease-out';
+            });
     }
 
+    /** @inheritdoc */
     public updatePosition(popup: HTMLElement, step: TourStep): void {
         const scrollTop: number =
             popup.style.position === 'fixed' ? window.scrollY || document.documentElement.scrollTop : 0;
@@ -43,15 +71,23 @@ export class FloatingUiPopupRenderer implements IRenderer {
             middleware.push(autoPlacement());
         }
 
-        computePosition(step.hostElement!, popup, {
-            placement: placement,
-            middleware: [...middleware, offset(20)],
-        }).then(({ x, y }) => {
-            Object.assign(popup.style, {
-                top: `${y - scrollTop}px`,
-                left: `${x}px`,
+        if (step.hostElement) {
+            computePosition(step.hostElement, popup, {
+                middleware: [...middleware, offset(20)],
+            }).then(({ x, y }) => {
+                Object.assign(popup.style, {
+                    top: `${y - scrollTop}px`,
+                    left: `${x}px`,
+                    transform: '',
+                });
             });
-        });
+        } else {
+            Object.assign(popup.style, {
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+            });
+        }
     }
 
     private setUpStrategies(): void {

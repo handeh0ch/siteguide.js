@@ -38,7 +38,7 @@ export class Tour {
     private _helperLayout: HTMLElement | null = null;
 
     private _stepList: TourStep[] = [];
-    private _currentStep: TourStep | null = null;
+    private _activeStep: TourStep | null = null;
     private _bodyResizeObserver: ResizeObserver;
     private readonly _config: RequiredTourConfig;
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
@@ -73,6 +73,10 @@ export class Tour {
         this._stepMap.set(config.id, step);
     }
 
+    public addSteps(steps: TourStepConfig[]): void {
+        steps.forEach((step: TourStepConfig) => this.addStep(step));
+    }
+
     public removeStep(stepId: StepId): void {
         this._stepList = this._stepList.filter((step: TourStep) => stepId !== step.id);
 
@@ -102,12 +106,12 @@ export class Tour {
             document.body.removeChild(this._helperLayout);
         }
 
-        this._currentStep = null;
+        this._activeStep = null;
     }
 
     public prev(): void {
-        const stepIndex: number = isDefined(this._currentStep)
-            ? this._stepList.indexOf(this._currentStep) - 1
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) - 1
             : this._stepList.indexOf(this._stepList[this._stepList.length - 1]);
 
         if (stepIndex < 0) {
@@ -115,13 +119,13 @@ export class Tour {
             return;
         }
 
-        this._currentStep = this._stepList[stepIndex];
-        this._currentStep.show();
+        this._activeStep = this._stepList[stepIndex];
+        this._activeStep.show();
     }
 
     public next(): void {
-        const stepIndex: number = isDefined(this._currentStep)
-            ? this._stepList.indexOf(this._currentStep) + 1
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) + 1
             : this._stepList.indexOf(this._stepList[0]);
 
         if (stepIndex >= this._stepList.length) {
@@ -129,22 +133,22 @@ export class Tour {
             return;
         }
 
-        this._currentStep = this._stepList[stepIndex];
-        this._currentStep.show();
+        this._activeStep = this._stepList[stepIndex];
+        this._activeStep.show();
     }
 
     private getBodyResizeObserver(): ResizeObserver {
         const observer: ResizeObserver = new ResizeObserver(() => {
-            if (!this.isStarted || !this._currentStep) {
+            if (!this.isStarted || !this._activeStep) {
                 return;
             }
 
             if (isDefined(this._popup)) {
-                this.popupRenderer.updatePosition(this._popup, this._currentStep);
+                this.popupRenderer.updatePosition(this._popup, this._activeStep);
             }
 
             if (isDefined(this._helperLayout)) {
-                this.helperRenderer.updatePosition(this._helperLayout, this._currentStep);
+                this.helperRenderer.updatePosition(this._helperLayout, this._activeStep);
             }
         });
 

@@ -6,9 +6,7 @@ import { IPopupContentRenderer } from '../interfaces/popup-content-renderer.inte
  * CustomStepStrategy class implements IUpdatePopup interface to handle custom popup content
  */
 export class CustomStepRenderer implements IPopupContentRenderer {
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     public renderContent(popup: HTMLElement, popupData: CustomPopupData, tourConfig: RequiredTourConfig): void {
         const content: HTMLDivElement = popup.querySelector(`.${tourConfig.classPrefix}-content`)!;
         content.appendChild(popupData.node);

@@ -17,6 +17,16 @@
     box-sizing: border-box;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 .siteguide {
     width: 280px;
     background-color: var(--bg);
@@ -28,7 +38,7 @@
     font-family: Helvetica, sans-serif;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.066);
     z-index: 1000001;
-    transition: all 0.3s ease-out;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .siteguide-helper {
@@ -82,7 +92,6 @@
 
 .siteguide-button {
     padding: var(--padding-s) var(--padding-l);
-    border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;

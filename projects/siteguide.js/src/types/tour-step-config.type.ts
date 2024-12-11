@@ -30,7 +30,7 @@ export type TourStepConfig = {
     /**
      * The host element or a function that returns the host element for the tour step
      */
-    host: PopupHost;
+    host?: PopupHost;
     /**
      * The popup data for the tour step
      */
