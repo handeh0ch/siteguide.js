@@ -4,5 +4,5 @@
  * @returns A type that represents a deep required version of T
  */
 export type DeepRequired<T> = Required<{
-    [P in keyof T]: T[P] extends object | undefined ? DeepRequired<Required<T[P]>> : T[P];
+    [Prop in keyof T]: T[Prop] extends object | undefined ? DeepRequired<Required<T[Prop]>> : T[Prop];
 }>;

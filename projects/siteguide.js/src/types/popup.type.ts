@@ -1,5 +1,4 @@
 import type { TourButtonConfig } from './button-config.type';
-
 /**
  * Represents the data for a popup
  */
@@ -13,7 +12,20 @@ export type PopupType = 'text' | 'custom';
 /**
  * The position of a popup
  */
-export type PopupPosition = 'top' | 'bottom' | 'left' | 'right';
+export type PopupPosition =
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-end'
+    | 'left-start'
+    | 'right-end'
+    | 'right-start';
 
 /**
  * Represents the shared data for a popup, including title, position, customization, and button collection.
@@ -25,6 +37,7 @@ export type SharedPopupData = {
     title?: string;
     /**
      * The position of the popup
+     * @default 'auto'
      */
     position?: PopupPosition;
     /**
@@ -36,7 +49,7 @@ export type SharedPopupData = {
     /**
      * A collection of button configurations for the popup
      */
-    buttonCollection: TourButtonConfig[];
+    buttonList?: TourButtonConfig[];
 };
 
 /**
@@ -71,6 +84,10 @@ export type PopupCustomization = {
      * The CSS class to apply to the popup footer
      */
     footerClass?: string;
+    /**
+     * The CSS class to apply to the popup image
+     */
+    imageClass?: string;
 };
 /**
  * Represents the data for a text popup
@@ -80,7 +97,11 @@ export type TextPopupData = SharedPopupData & {
     /**
      * The text to display in the popup
      */
-    text: string;
+    text?: string;
+    /**
+     * The source of the image to display in the popup
+     */
+    imgSrc?: string;
 };
 
 /**

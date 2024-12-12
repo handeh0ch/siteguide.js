@@ -1,41 +1,24 @@
-import { IUpdatePopup } from './popup-renderer/interfaces/update-popup.interface';
-import { CustomStepStrategy } from './popup-renderer/strategies/custom-step.strategy';
-import { TextStepStrategy } from './popup-renderer/strategies/text-step.strategy';
+import type { ITourStep } from 'interfaces/tour.interface';
+import { ITour } from 'interfaces/tour.interface';
+import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
+import { HelperLayoutRenderer } from './popup-renderer/helper-layout.renderer';
+import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
-import { TourButtonConfig } from './types/button-config.type';
-import { PopupType } from './types/popup.type';
-import { TourConfig } from './types/tour-config.type';
-import { StepId, TourStepConfig } from './types/tour-step-config.type';
-import { DeepRequired } from './types/utility.type';
+import type { RequiredTourConfig, TourConfig } from './types/tour-config.type';
+import type { StepId, TourStepConfig } from './types/tour-step-config.type';
+import { isDefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { getCloseIconHTML } from './utils/get-close-icon.util';
 
-export class Tour {
-    public get stepList(): readonly TourStep[] {
-        return this._stepList as Readonly<TourStep[]>;
+export class Tour implements ITour {
+    public get stepList(): readonly ITourStep[] {
+        return this._stepList as Readonly<ITourStep[]>;
     }
 
-    public get config(): DeepRequired<TourConfig> {
+    public get config(): RequiredTourConfig {
         return this._config;
     }
 
-    /**
-     * Popup element getter
-     * @returns {HTMLElement | null} The popup element or null if not found.
-     * @example siteguide popup layout
-     *
-     * <div class="siteguide">
-     *     <div class="siteguide-header">
-     *         <h1 class="siteguide-title"></h1>
-     *         <div class="siteguide-close"></div>
-     *     </div>
-     *     <div class="siteguide-content"></div>
-     *     <div class="siteguide-footer">
-     *         <button class="siteguide-button"></button>
-     *         <button class="siteguide-button"></button>
-     *     </div>
-     * </div>
-     */
     public get popup(): HTMLElement | null {
         return this._popup;
     }
@@ -44,26 +27,26 @@ export class Tour {
         return this._helperLayout;
     }
 
+    public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
+    public readonly helperRenderer: IRenderer = new HelperLayoutRenderer();
+
     /**
      * TODO remove
      * @deprecated remove later
      */
     public isStarted: boolean = false;
 
-    public readonly updatePopupStrategies: Map<PopupType, IUpdatePopup> = new Map();
-
     private _popup: HTMLElement | null = null;
     private _helperLayout: HTMLElement | null = null;
 
+    private _stepList: ITourStep[] = [];
+    private _activeStep: ITourStep | null = null;
+    private _bodyResizeObserver: ResizeObserver;
+    private readonly _config: RequiredTourConfig;
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
-    private _stepList: TourStep[] = [];
-    private _currentStep: TourStep | null = null;
-    private _bodyResizeObserver!: ResizeObserver;
-    private readonly _config: DeepRequired<TourConfig>;
 
     public constructor(config: TourConfig) {
-        this.setUpStrategies();
-        this.setUpBodySizeObserver();
+        this._bodyResizeObserver = this.getBodyResizeObserver();
 
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
@@ -74,6 +57,10 @@ export class Tour {
                 inline: 'center',
             },
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
+            helperLayout: {
+                paddingX: config.helperLayout?.paddingX ?? 8,
+                paddingY: config.helperLayout?.paddingY ?? 8,
+            },
         };
     }
 
@@ -84,13 +71,16 @@ export class Tour {
 
         const step: TourStep = new TourStep(this, config);
 
-        config.popup.buttonCollection.forEach((button: TourButtonConfig) => (button.action = button.action.bind(this)));
         this._stepList.push(step);
         this._stepMap.set(config.id, step);
     }
 
+    public addSteps(steps: TourStepConfig[]): void {
+        steps.forEach((step: TourStepConfig) => this.addStep(step));
+    }
+
     public removeStep(stepId: StepId): void {
-        this._stepList = this._stepList.filter((step: TourStep) => stepId !== step.id);
+        this._stepList = this._stepList.filter((step: ITourStep) => stepId !== step.id);
 
         this._stepMap.delete(stepId);
     }
@@ -102,9 +92,6 @@ export class Tour {
         document.body.appendChild(this._popup);
 
         this._helperLayout = createElement('div', [`${this._config.classPrefix}-helper`]);
-        this._helperLayout.addEventListener('click', () => {
-            this.complete();
-        });
         document.body.appendChild(this._helperLayout);
 
         this.next();
@@ -120,48 +107,55 @@ export class Tour {
         if (this._helperLayout) {
             document.body.removeChild(this._helperLayout);
         }
+
+        this._activeStep = null;
     }
 
     public prev(): void {
-        this._currentStep?.hide();
-
-        const stepIndex: number = this._stepList.indexOf(this._currentStep!) - 1;
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) - 1
+            : this._stepList.indexOf(this._stepList[this._stepList.length - 1]);
 
         if (stepIndex < 0) {
             this.complete();
             return;
         }
 
-        this._currentStep = this._stepList[stepIndex];
-        this._currentStep.show();
+        this._activeStep = this._stepList[stepIndex];
+        this._activeStep.show();
     }
 
     public next(): void {
-        const stepIndex: number = this._stepList.indexOf(this._currentStep!) + 1;
-
-        this._currentStep?.hide();
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) + 1
+            : this._stepList.indexOf(this._stepList[0]);
 
         if (stepIndex >= this._stepList.length) {
             this.complete();
             return;
         }
 
-        this._currentStep = this._stepList[stepIndex];
-        this._currentStep.show();
+        this._activeStep = this._stepList[stepIndex];
+        this._activeStep.show();
     }
 
-    private setUpStrategies(): void {
-        this.updatePopupStrategies.set('text', new TextStepStrategy());
-        this.updatePopupStrategies.set('custom', new CustomStepStrategy());
-    }
+    private getBodyResizeObserver(): ResizeObserver {
+        const observer: ResizeObserver = new ResizeObserver(() => {
+            if (!this.isStarted || !this._activeStep) {
+                return;
+            }
 
-    private setUpBodySizeObserver(): void {
-        this._bodyResizeObserver = new ResizeObserver(() => {
-            if (this.isStarted) {
-                this._currentStep?.updatePopupPosition();
+            if (isDefined(this._popup)) {
+                this.popupRenderer.updatePosition(this._popup, this._activeStep);
+            }
+
+            if (isDefined(this._helperLayout)) {
+                this.helperRenderer.updatePosition(this._helperLayout, this._activeStep);
             }
         });
 
-        this._bodyResizeObserver.observe(document.body);
+        observer.observe(document.body);
+
+        return observer;
     }
 }
