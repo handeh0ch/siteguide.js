@@ -73,6 +73,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
 
         if (step.hostElement) {
             computePosition(step.hostElement, popup, {
+                placement,
                 middleware: [...middleware, offset(20)],
             }).then(({ x, y }) => {
                 Object.assign(popup.style, {

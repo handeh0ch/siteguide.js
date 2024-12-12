@@ -39,6 +39,7 @@
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.066);
     z-index: 1000001;
     animation: fadeIn 0.3s ease-out;
+    max-height: 400px;
 }
 
 .siteguide-helper {
@@ -64,6 +65,16 @@
 .siteguide-content {
     width: 100%;
     padding: var(--padding-m) var(--padding-2l);
+    overflow-y: auto;
+}
+
+.siteguide-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.siteguide-content::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 4px;
 }
 
 .siteguide-title {
@@ -71,6 +82,14 @@
     font-size: 18px;
     font-weight: 800;
     color: var(--text);
+}
+
+.siteguide-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-bottom: var(--padding-m);
 }
 
 .siteguide-description {

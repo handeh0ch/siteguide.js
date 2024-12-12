@@ -84,6 +84,10 @@ export type PopupCustomization = {
      * The CSS class to apply to the popup footer
      */
     footerClass?: string;
+    /**
+     * The CSS class to apply to the popup image
+     */
+    imageClass?: string;
 };
 /**
  * Represents the data for a text popup
@@ -93,7 +97,11 @@ export type TextPopupData = SharedPopupData & {
     /**
      * The text to display in the popup
      */
-    text: string;
+    text?: string;
+    /**
+     * The source of the image to display in the popup
+     */
+    imgSrc?: string;
 };
 
 /**
