@@ -5,7 +5,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-    title: 'Siteguide',
+    title: 'Siteguide.js',
     tagline: 'Web-site guides and onboarding tours building library',
     favicon: 'img/favicon.ico',
     url: 'https://siteguide.github.io',
@@ -36,7 +36,7 @@ const config: Config = {
         // Replace with your project's social card
         // image: 'img/docusaurus-social-card.jpg',
         navbar: {
-            title: 'Siteguide',
+            title: 'Siteguide.js',
             // logo: {
             //     alt: 'My Site Logo',
             //     src: 'img/logo.svg',
@@ -46,7 +46,7 @@ const config: Config = {
                     type: 'docSidebar',
                     sidebarId: 'docSidebar',
                     position: 'left',
-                    label: 'Documentation',
+                    label: 'documentation',
                 },
                 {
                     href: 'https://github.com/handeh0ch/siteguide.js',
@@ -56,8 +56,12 @@ const config: Config = {
             ],
         },
         prism: {
-            theme: prismThemes.github,
-            darkTheme: prismThemes.dracula,
+            theme: prismThemes.oneLight,
+            darkTheme: prismThemes.oneDark,
+        },
+        footer: {
+            style: 'dark',
+            copyright: `Copyright © ${new Date().getFullYear()} Siteguide.js.`,
         },
     } satisfies Preset.ThemeConfig,
 };

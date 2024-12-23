@@ -2,46 +2,30 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Let's discover **Siteguide.js**.
 
-## Getting Started
+## What is Siteguide.js?
 
-Get started by **creating a new site**.
+Siteguide.js is an open source library made with vanilla Javascript and CSS to help you build web-site guides and onboarding tours.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+Siteguide.js is designed to be simple and easy to use. It is a lightweight library with only one dependency - [Floating UI](https://www.floating-ui.com/).
 
-### What you'll need
+## Why use Siteguide.js?
 
--   [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-    -   When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+-   It is a lightweight library with only one dependency - [Floating UI](https://www.floating-ui.com/).
+-   It is designed to be simple and easy to use.
+-   It is open source and free to use.
 
-## Generate a new site
+## Github Releases
 
-Generate a new Docusaurus site using the **classic template**.
+You can find the latest releases of Siteguide.js on the [Github Releases](https://github.com/handeh0ch/siteguide.js/releases) page.
 
-The classic template will automatically be added to your project after you run the command:
+## Installation
 
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
+You can install Siteguide.js using npm.
 
 ```bash
-cd my-website
-npm run start
+npm install siteguide.js
 ```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
