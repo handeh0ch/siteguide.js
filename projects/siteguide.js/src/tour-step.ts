@@ -62,7 +62,7 @@ export class TourStep implements ITourStep {
         ]);
     }
 
-    private resolveHostElement(hostElement: string | HTMLElement): HTMLElement | null {
+    private resolveHostElement(hostElement: string | Element): HTMLElement | null {
         if (typeof this._hostData === 'string') {
             return document.querySelector(this._hostData);
         }

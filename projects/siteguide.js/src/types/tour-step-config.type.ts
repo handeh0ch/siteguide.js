@@ -15,7 +15,7 @@ import type { PopupData } from './popup.type';
  * // Example 4: Function returning string as host
  * { host: () => '.example-element' };
  */
-export type PopupHost = string | HTMLElement | (() => HTMLElement | string);
+export type PopupHost = string | Element | (() => Element | string);
 
 export type StepId = string;
 

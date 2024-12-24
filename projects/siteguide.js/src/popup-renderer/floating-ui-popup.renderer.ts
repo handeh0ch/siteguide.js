@@ -39,14 +39,6 @@ export class FloatingUiPopupRenderer implements IRenderer {
             resolve();
         })
             .then(() => {
-                if (
-                    step.isFirst ||
-                    (!step.hasHost && !step.prevStep?.hasHost) ||
-                    (!step.hasHost && !step.nextStep?.hasHost)
-                ) {
-                    return Promise.resolve();
-                }
-
                 return delay(400);
             })
             .then(() => {

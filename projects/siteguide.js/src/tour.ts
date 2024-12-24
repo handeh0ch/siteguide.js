@@ -1,5 +1,6 @@
 import type { ITourStep } from 'interfaces/tour.interface';
 import { ITour } from 'interfaces/tour.interface';
+import { Dispatcher } from './events/dispatcher';
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
 import { HelperLayoutRenderer } from './popup-renderer/helper-layout.renderer';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
@@ -10,7 +11,7 @@ import { isDefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { getCloseIconHTML } from './utils/get-close-icon.util';
 
-export class Tour implements ITour {
+export class Tour extends Dispatcher implements ITour {
     public get stepList(): readonly ITourStep[] {
         return this._stepList as Readonly<ITourStep[]>;
     }
@@ -46,6 +47,7 @@ export class Tour implements ITour {
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
 
     public constructor(config: TourConfig) {
+        super();
         this._bodyResizeObserver = this.getBodyResizeObserver();
 
         this._config = {
@@ -94,6 +96,7 @@ export class Tour implements ITour {
         this._helperLayout = createElement('div', [`${this._config.classPrefix}-helper`]);
         document.body.appendChild(this._helperLayout);
 
+        this.dispatch('start');
         this.next();
     }
 
@@ -109,6 +112,7 @@ export class Tour implements ITour {
         }
 
         this._activeStep = null;
+        this.dispatch('complete');
     }
 
     public prev(): void {
@@ -123,6 +127,9 @@ export class Tour implements ITour {
 
         this._activeStep = this._stepList[stepIndex];
         this._activeStep.show();
+
+        this.dispatch('prev');
+        this.dispatch('changeStep');
     }
 
     public next(): void {
@@ -137,6 +144,9 @@ export class Tour implements ITour {
 
         this._activeStep = this._stepList[stepIndex];
         this._activeStep.show();
+
+        this.dispatch('next');
+        this.dispatch('changeStep');
     }
 
     private getBodyResizeObserver(): ResizeObserver {
