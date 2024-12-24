@@ -1,7 +1,7 @@
 {
     "name": "siteguide.js",
     "version": "0.3.0",
-    "description": "Web-site guides and onboarding tours building lib",
+    "description": "Open source library made with vanilla Javascript and CSS to help you build website guides and onboarding tours.",
     "license": "MIT",
     "keywords": [
         "siteguide",
@@ -46,6 +46,7 @@
         "clean": "rimraf dist",
         "dev": "vite build --watch",
         "start": "vite --host --open",
+        "publish": "npm run build && npm publish",
         "build": "npm run clean && vite build",
         "rollup:dts": "api-extractor run",
         "append:dts": "npm run rollup:dts",

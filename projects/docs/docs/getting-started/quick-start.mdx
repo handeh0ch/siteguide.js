@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+---
+
+# Quick Start
+
+Basic information about the way to quickly get started with Siteguide.js.
+
+## Installation
+
+Before you start, make sure you have installed Siteguide.js. Read the [Installation](/getting-started/installation) page to install the library.
+
+## Adding a tour to your project
+
+### 1. Create a tour
+
+```js title='script.js'
+import { Tour } from 'siteguide.js';
+
+const tour = new Tour({
+    scrollTo: {
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+    },
+});
+```
+
+
+### 2. Add steps to the tour
+
+```js title='script.js'
+const stepList = [
+    {
+        id: '1',
+        host: '.step-1',
+        popup: {
+            text: "I'm step 1",
+            title: 'Step 1',
+            type: 'text',
+        },
+    },
+    {
+        id: '2',
+        host: '.step-1',
+        popup: {
+            title: 'Step 2',
+            text: "I'm step 2",
+            type: 'text',
+        },
+    },
+];
+
+tour.addSteps(stepList);
+```
+
+:::note
+
+Don't forget to add classes `.step-1` and `.step-2` to elements on page.
+
+:::
+
+### 3. Start a tour
+
+```js title='script.js'
+tour.start();
+```
