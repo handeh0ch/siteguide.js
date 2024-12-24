@@ -8,7 +8,7 @@ Let's discover **Siteguide.js**.
 
 ## What is Siteguide.js?
 
-Siteguide.js is an open source library made with vanilla Javascript and CSS to help you build web-site guides and onboarding tours.
+Siteguide.js is an open source library made with vanilla Javascript and CSS to help you build website guides and onboarding tours.
 
 Siteguide.js is designed to be simple and easy to use. It is a lightweight library with only one dependency - [Floating UI](https://www.floating-ui.com/).
 
@@ -27,5 +27,5 @@ You can find the latest releases of Siteguide.js on the [Github Releases](https:
 You can install Siteguide.js using npm.
 
 ```bash
-npm install siteguide.js
+npm install siteguide.js --save
 ```

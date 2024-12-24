@@ -6,7 +6,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 const config: Config = {
     title: 'Siteguide.js',
-    tagline: 'Web-site guides and onboarding tours building library',
+    tagline: 'Website guides and onboarding tours building library',
     favicon: 'img/favicon.ico',
     url: 'https://siteguide.github.io',
     baseUrl: '/',
