@@ -46,6 +46,7 @@
         "clean": "rimraf dist",
         "dev": "vite build --watch",
         "start": "vite --host --open",
+        "publish": "npm run build && npm publish",
         "build": "npm run clean && vite build",
         "rollup:dts": "api-extractor run",
         "append:dts": "npm run rollup:dts",
