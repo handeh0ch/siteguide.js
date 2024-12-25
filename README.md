@@ -1,7 +1,7 @@
 
 # Siteguide.js
 
-Siteguide.js is an open source library made with vanilla Javascript and CSS to help you build website guides and onboarding tours.
+Siteguide is an open source library made with vanilla Javascript and CSS to help you build website guides and onboarding tours.
 
 Siteguide empowers you to create personalized tours and interactive guides for users within your application or website. With its simple and minimalistic design, Siteguide offers extensive customization options while remaining user-friendly and intuitive.
 
