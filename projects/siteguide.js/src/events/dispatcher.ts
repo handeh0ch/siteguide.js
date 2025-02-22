@@ -6,7 +6,7 @@ import { TourEventType } from './types/tour-event.type';
 export class Dispatcher {
     private readonly _events: Map<TourEventType, DispatcherEvent> = new Map();
 
-    public on(eventName: TourEventType, callback: TourEventCallback) {
+    public on(eventName: TourEventType, callback: TourEventCallback): void {
         let event: DispatcherEvent | undefined = this._events.get(eventName);
         if (!event) {
             event = new DispatcherEvent(eventName);
@@ -16,7 +16,7 @@ export class Dispatcher {
         event.registerCallback(callback);
     }
 
-    public off(eventName: TourEventType, callback?: TourEventCallback) {
+    public off(eventName: TourEventType, callback?: TourEventCallback): void {
         const event: DispatcherEvent | undefined = this._events.get(eventName);
 
         if (isDefined(event) && isNullOrUndefined(callback)) {
@@ -34,7 +34,7 @@ export class Dispatcher {
         }
     }
 
-    public dispatch(eventName: TourEventType) {
+    public dispatch(eventName: TourEventType): void {
         const event: DispatcherEvent | undefined = this._events.get(eventName);
 
         if (event) {

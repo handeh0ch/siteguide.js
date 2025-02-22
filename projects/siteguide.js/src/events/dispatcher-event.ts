@@ -13,11 +13,11 @@ export class DispatcherEvent {
         this._event = event;
     }
 
-    public registerCallback(callback: TourEventCallback) {
+    public registerCallback(callback: TourEventCallback): void {
         this._callbacks.push(callback);
     }
 
-    public unregisterCallback(callback: TourEventCallback) {
+    public unregisterCallback(callback: TourEventCallback): void {
         const index: number = this.callbacks.indexOf(callback);
 
         if (index > -1) {
@@ -25,7 +25,7 @@ export class DispatcherEvent {
         }
     }
 
-    public fire() {
+    public fire(): void {
         const callbacks: TourEventCallback[] = this._callbacks.slice(0);
 
         callbacks.forEach((callback: TourEventCallback) => {

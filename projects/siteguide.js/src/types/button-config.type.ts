@@ -1,7 +1,7 @@
 /**
  * Type of a button
  */
-export type TourButtonType = 'primary' | 'secondary';
+export type TourButtonType = 'primary' | 'secondary' | 'link';
 
 /**
  * Represents the configuration for a button

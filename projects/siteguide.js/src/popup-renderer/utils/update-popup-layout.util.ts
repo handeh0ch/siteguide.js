@@ -14,7 +14,7 @@ import { createElement } from '../../utils/create-element.util';
  */
 export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: ITour): void {
     popup.innerHTML = '';
-    popup.className = `${tour.config.classPrefix}`;
+    popup.className = `${tour.config.classPrefix} ${tour.config.animationClass}`;
 
     if (popupData.customization?.class) {
         popup.classList.add(popupData.customization.class);
@@ -66,6 +66,8 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
             buttonClassList.push(`${tour.config.classPrefix}-button-secondary`);
         } else if (button.type === 'primary') {
             buttonClassList.push(`${tour.config.classPrefix}-button-primary`);
+        } else if (button.type === 'link') {
+            buttonClassList.push(`${tour.config.classPrefix}-button-link`);
         }
 
         if (!isNullOrUndefined(button.class) && button.class !== '') {
@@ -76,8 +78,8 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
 
         buttonElement.innerText = button.text;
 
-        buttonElement.onclick = (): void => {
-            button.action();
+        buttonElement.onclick = (e: MouseEvent): void => {
+            button.action.call(tour);
         };
 
         buttonList.appendChild(buttonElement);

@@ -11,9 +11,9 @@ export interface ITour {
     get stepList(): readonly ITourStep[];
     get config(): RequiredTourConfig;
     get popup(): HTMLElement | null;
-    get helperLayout(): HTMLElement | null;
+    get highlight(): HTMLElement | null;
     get popupRenderer(): IRenderer;
-    get helperRenderer(): IRenderer;
+    get highlightRenderer(): IRenderer;
     addStep(config: TourStepConfig): void;
     addSteps(steps: TourStepConfig[]): void;
     removeStep(stepId: StepId): void;

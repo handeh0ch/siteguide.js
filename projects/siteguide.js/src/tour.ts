@@ -1,8 +1,7 @@
 import type { ITourStep } from 'interfaces/tour.interface';
 import { ITour } from 'interfaces/tour.interface';
-import { Dispatcher } from './events/dispatcher';
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
-import { HelperLayoutRenderer } from './popup-renderer/helper-layout.renderer';
+import { HighlightRenderer } from './popup-renderer/highlight.renderer';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
 import type { RequiredTourConfig, TourConfig } from './types/tour-config.type';
@@ -11,7 +10,7 @@ import { isDefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { getCloseIconHTML } from './utils/get-close-icon.util';
 
-export class Tour extends Dispatcher implements ITour {
+export class Tour implements ITour {
     public get stepList(): readonly ITourStep[] {
         return this._stepList as Readonly<ITourStep[]>;
     }
@@ -24,12 +23,12 @@ export class Tour extends Dispatcher implements ITour {
         return this._popup;
     }
 
-    public get helperLayout(): HTMLElement | null {
-        return this._helperLayout;
+    public get highlight(): HTMLElement | null {
+        return this._highlight;
     }
 
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
-    public readonly helperRenderer: IRenderer = new HelperLayoutRenderer();
+    public readonly highlightRenderer: IRenderer = new HighlightRenderer();
 
     /**
      * TODO remove
@@ -38,30 +37,32 @@ export class Tour extends Dispatcher implements ITour {
     public isStarted: boolean = false;
 
     private _popup: HTMLElement | null = null;
-    private _helperLayout: HTMLElement | null = null;
+    private _highlight: HTMLElement | null = null;
 
     private _stepList: ITourStep[] = [];
     private _activeStep: ITourStep | null = null;
     private _bodyResizeObserver: ResizeObserver;
-    private readonly _config: RequiredTourConfig;
+    private _config: RequiredTourConfig;
     private readonly _stepMap: Map<StepId, TourStep> = new Map();
 
     public constructor(config: TourConfig) {
-        super();
         this._bodyResizeObserver = this.getBodyResizeObserver();
 
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
+            animationClass: config.animationClass ?? 'siteguide-animation',
             allowClose: config.allowClose ?? true,
             scrollTo: config.scrollTo ?? {
                 behavior: 'smooth',
                 block: 'center',
                 inline: 'center',
             },
+            allowClickoutClose: config.allowClickoutClose ?? false,
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
-            helperLayout: {
-                paddingX: config.helperLayout?.paddingX ?? 8,
-                paddingY: config.helperLayout?.paddingY ?? 8,
+            highlight: {
+                disable: config.highlight?.disable ?? false,
+                paddingX: config.highlight?.paddingX ?? 8,
+                paddingY: config.highlight?.paddingY ?? 8,
             },
         };
     }
@@ -93,10 +94,16 @@ export class Tour extends Dispatcher implements ITour {
         this._popup = createElement('div', [this._config.classPrefix]);
         document.body.appendChild(this._popup);
 
-        this._helperLayout = createElement('div', [`${this._config.classPrefix}-helper`]);
-        document.body.appendChild(this._helperLayout);
+        if (!this._config.highlight.disable) {
+            this._highlight = createElement('div', [`${this._config.classPrefix}-helper`]);
+            document.body.appendChild(this._highlight);
+        }
 
-        this.dispatch('start');
+        // if (this._config.allowClickoutClose) {
+        //     document.body.addEventListener('click', this.complete.bind(this));
+        // }
+
+        // this.dispatch('start');
         this.next();
     }
 
@@ -107,12 +114,12 @@ export class Tour extends Dispatcher implements ITour {
             document.body.removeChild(this._popup);
         }
 
-        if (this._helperLayout) {
-            document.body.removeChild(this._helperLayout);
+        if (this._highlight) {
+            document.body.removeChild(this._highlight);
         }
 
         this._activeStep = null;
-        this.dispatch('complete');
+        // this.dispatch('complete');
     }
 
     public prev(): void {
@@ -128,8 +135,8 @@ export class Tour extends Dispatcher implements ITour {
         this._activeStep = this._stepList[stepIndex];
         this._activeStep.show();
 
-        this.dispatch('prev');
-        this.dispatch('changeStep');
+        // this.dispatch('prev');
+        // this.dispatch('changeStep');
     }
 
     public next(): void {
@@ -145,8 +152,16 @@ export class Tour extends Dispatcher implements ITour {
         this._activeStep = this._stepList[stepIndex];
         this._activeStep.show();
 
-        this.dispatch('next');
-        this.dispatch('changeStep');
+        // this.dispatch('next');
+        // this.dispatch('changeStep');
+    }
+
+    public setConfig(config: TourConfig): void {
+        // @ts-expect-error
+        this._config = {
+            ...this._config,
+            ...config,
+        };
     }
 
     private getBodyResizeObserver(): ResizeObserver {
@@ -159,8 +174,8 @@ export class Tour extends Dispatcher implements ITour {
                 this.popupRenderer.updatePosition(this._popup, this._activeStep);
             }
 
-            if (isDefined(this._helperLayout)) {
-                this.helperRenderer.updatePosition(this._helperLayout, this._activeStep);
+            if (isDefined(this._highlight) && !this.config.highlight.disable) {
+                this.highlightRenderer.updatePosition(this._highlight, this._activeStep);
             }
         });
 

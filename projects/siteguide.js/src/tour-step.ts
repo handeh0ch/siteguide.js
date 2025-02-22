@@ -34,7 +34,7 @@ export class TourStep implements ITourStep {
 
     private readonly _hostData: PopupHost | undefined;
     private readonly _popupRenderer: IRenderer;
-    private readonly _helperRenderer: IRenderer;
+    private readonly _highlightRenderer: IRenderer;
 
     public constructor(tour: ITour, config: TourStepConfig) {
         this.id = config.id;
@@ -42,11 +42,11 @@ export class TourStep implements ITourStep {
         this.tour = tour;
         this._hostData = config.host;
         this._popupRenderer = tour.popupRenderer;
-        this._helperRenderer = tour.helperRenderer;
+        this._highlightRenderer = tour.highlightRenderer;
     }
 
     public async show(): Promise<void> {
-        if (isNullOrUndefined(this.tour.popup) || isNullOrUndefined(this.tour.helperLayout)) {
+        if (isNullOrUndefined(this.tour.popup)) {
             return;
         }
 
@@ -56,10 +56,13 @@ export class TourStep implements ITourStep {
             );
         }
 
-        await Promise.all([
-            this._helperRenderer.render(this.tour.helperLayout, this),
-            this._popupRenderer.render(this.tour.popup, this),
-        ]);
+        const renderersPromises = [this._popupRenderer.render(this.tour.popup, this)];
+
+        if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
+            renderersPromises.push(this._highlightRenderer.render(this.tour.highlight, this));
+        }
+
+        await Promise.all(renderersPromises);
     }
 
     private resolveHostElement(hostElement: string | Element): HTMLElement | null {

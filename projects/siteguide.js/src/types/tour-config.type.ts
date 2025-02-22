@@ -19,6 +19,11 @@ export type TourConfig = {
      */
     allowClose?: boolean;
     /**
+     * Indicates if the tour popup can be closed by clicking outside the popup
+     * @default true
+     */
+    allowClickoutClose?: boolean;
+    /**
      * Specifies if the tour should scroll to the current step and how to scroll
      * Can be a boolean to enable or disable scrolling, or an object with options for scrollIntoView
      * @default {behavior:'smooth',block:'center',inline:'center'}
@@ -31,7 +36,12 @@ export type TourConfig = {
     /**
      * Configuration for the helper layout.
      */
-    helperLayout?: {
+    highlight?: {
+        /**
+         * Indicates if the helper layout should be disabled
+         * @default false
+         */
+        disable?: boolean;
         /**
          * The horizontal padding for the helper layout.
          * @default 8
@@ -43,6 +53,12 @@ export type TourConfig = {
          */
         paddingY?: number;
     };
+
+    /**
+     * The class to apply to the tour popup animation
+     * @default 'siteguide-animation'
+     */
+    animationClass?: string;
 };
 
 /**
