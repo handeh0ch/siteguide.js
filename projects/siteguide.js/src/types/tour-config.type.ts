@@ -52,6 +52,10 @@ export type TourConfig = {
          * @default 8
          */
         paddingY?: number;
+        /**
+         * The class to apply to the highlight
+         */
+        class?: string;
     };
 
     /**

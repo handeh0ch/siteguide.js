@@ -28,6 +28,10 @@ export type TourStepConfig = {
      */
     id: StepId;
     /**
+     * The index of the step in the tour
+     */
+    index?: number;
+    /**
      * The host element or a function that returns the host element for the tour step
      */
     host?: PopupHost;

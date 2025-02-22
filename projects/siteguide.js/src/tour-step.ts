@@ -1,13 +1,14 @@
-import { ITour } from 'interfaces/tour.interface';
 import type { ITourStep } from './interfaces/tour.interface';
+import { ITour } from './interfaces/tour.interface';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import type { PopupData } from './types/popup.type';
+import { StepDirection } from './types/step-direction.type';
 import type { PopupHost, StepId, TourStepConfig } from './types/tour-step-config.type';
 import { isDefined, isNullOrUndefined } from './utils/base.util';
 
 export class TourStep implements ITourStep {
     public get isFirst(): boolean {
-        return this.tour.stepList.indexOf(this) === 0;
+        return this.index === 0;
     }
 
     public get nextStep(): ITourStep | null {
@@ -16,6 +17,10 @@ export class TourStep implements ITourStep {
 
     public get prevStep(): ITourStep | null {
         return this.tour.stepList[this.tour.stepList.indexOf(this) - 1] ?? null;
+    }
+
+    public get direction(): StepDirection {
+        return this._direction;
     }
 
     public get hasHost(): boolean {
@@ -29,9 +34,11 @@ export class TourStep implements ITourStep {
     public readonly id: StepId;
     public readonly popupData: PopupData;
     public readonly tour: ITour;
+    public readonly index: number | null;
 
     private _hostElement: HTMLElement | null = null;
 
+    private _direction: StepDirection = 'toNext';
     private readonly _hostData: PopupHost | undefined;
     private readonly _popupRenderer: IRenderer;
     private readonly _highlightRenderer: IRenderer;
@@ -40,15 +47,18 @@ export class TourStep implements ITourStep {
         this.id = config.id;
         this.popupData = config.popup;
         this.tour = tour;
+        this.index = config.index ?? null;
         this._hostData = config.host;
         this._popupRenderer = tour.popupRenderer;
         this._highlightRenderer = tour.highlightRenderer;
     }
 
-    public async show(): Promise<void> {
+    public async show(direction: StepDirection): Promise<void> {
         if (isNullOrUndefined(this.tour.popup)) {
             return;
         }
+
+        this._direction = direction;
 
         if (this._hostData) {
             this._hostElement = this.resolveHostElement(

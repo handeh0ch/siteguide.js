@@ -63,6 +63,7 @@ export class Tour implements ITour {
                 disable: config.highlight?.disable ?? false,
                 paddingX: config.highlight?.paddingX ?? 8,
                 paddingY: config.highlight?.paddingY ?? 8,
+                class: config.highlight?.class ?? 'siteguide-highlight',
             },
         };
     }
@@ -74,7 +75,12 @@ export class Tour implements ITour {
 
         const step: TourStep = new TourStep(this, config);
 
-        this._stepList.push(step);
+        if (isDefined(config.index)) {
+            this._stepList.splice(config.index, 0, step);
+        } else {
+            this._stepList.push(step);
+        }
+
         this._stepMap.set(config.id, step);
     }
 
@@ -95,7 +101,11 @@ export class Tour implements ITour {
         document.body.appendChild(this._popup);
 
         if (!this._config.highlight.disable) {
-            this._highlight = createElement('div', [`${this._config.classPrefix}-helper`]);
+            this._highlight = createElement('div', [
+                isDefined(this._config.highlight.class)
+                    ? this._config.highlight.class
+                    : `${this._config.classPrefix}-highlight`,
+            ]);
             document.body.appendChild(this._highlight);
         }
 
@@ -133,7 +143,7 @@ export class Tour implements ITour {
         }
 
         this._activeStep = this._stepList[stepIndex];
-        this._activeStep.show();
+        this._activeStep.show('fromBack');
 
         // this.dispatch('prev');
         // this.dispatch('changeStep');
@@ -150,7 +160,7 @@ export class Tour implements ITour {
         }
 
         this._activeStep = this._stepList[stepIndex];
-        this._activeStep.show();
+        this._activeStep.show('toNext');
 
         // this.dispatch('next');
         // this.dispatch('changeStep');
