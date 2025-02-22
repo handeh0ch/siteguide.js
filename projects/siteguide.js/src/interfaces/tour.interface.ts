@@ -1,5 +1,6 @@
 import { IRenderer } from 'popup-renderer/interfaces/renderer.interface';
 import { PopupData } from 'types/popup.type';
+import { StepDirection } from '../types/step-direction.type';
 import { RequiredTourConfig } from '../types/tour-config.type';
 import { StepId, TourStepConfig } from '../types/tour-step-config.type';
 
@@ -11,9 +12,9 @@ export interface ITour {
     get stepList(): readonly ITourStep[];
     get config(): RequiredTourConfig;
     get popup(): HTMLElement | null;
-    get helperLayout(): HTMLElement | null;
+    get highlight(): HTMLElement | null;
     get popupRenderer(): IRenderer;
-    get helperRenderer(): IRenderer;
+    get highlightRenderer(): IRenderer;
     addStep(config: TourStepConfig): void;
     addSteps(steps: TourStepConfig[]): void;
     removeStep(stepId: StepId): void;
@@ -28,13 +29,15 @@ export interface ITour {
  * Made for resolving circular dependencies
  */
 export interface ITourStep {
-    readonly id: StepId;
-    readonly popupData: PopupData;
-    readonly tour: ITour;
+    get direction(): StepDirection;
     get isFirst(): boolean;
     get nextStep(): ITourStep | null;
     get prevStep(): ITourStep | null;
     get hasHost(): boolean;
     get hostElement(): HTMLElement | null;
-    show(): Promise<void>;
+    readonly id: StepId;
+    readonly popupData: PopupData;
+    readonly tour: ITour;
+    readonly index: number | null;
+    show(direction: StepDirection): Promise<void>;
 }

@@ -2,7 +2,7 @@ import { ITourStep } from 'interfaces/tour.interface';
 import { getPositionType } from '../utils/is-fixed.util';
 import type { IRenderer } from './interfaces/renderer.interface';
 
-export class HelperLayoutRenderer implements IRenderer {
+export class HighlightRenderer implements IRenderer {
     /** @inheritdoc */
     public render(helper: HTMLElement, step: ITourStep): Promise<void> {
         return new Promise<void>((resolve) => {
@@ -29,8 +29,8 @@ export class HelperLayoutRenderer implements IRenderer {
         }
 
         const rect: DOMRect = step.hostElement.getBoundingClientRect();
-        const paddingX: number = step.tour.config.helperLayout?.paddingX ?? 8;
-        const paddingY: number = step.tour.config.helperLayout?.paddingY ?? 8;
+        const paddingX: number = step.tour.config.highlight?.paddingX ?? 8;
+        const paddingY: number = step.tour.config.highlight?.paddingY ?? 8;
 
         const scrollTop: number =
             helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;

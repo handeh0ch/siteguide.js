@@ -93,6 +93,9 @@ export type PopupCustomization = {
  * Represents the data for a text popup
  */
 export type TextPopupData = SharedPopupData & {
+    /**
+     * The type of the popup
+     */
     type: Extract<PopupType, 'text'>;
     /**
      * The text to display in the popup
@@ -108,6 +111,9 @@ export type TextPopupData = SharedPopupData & {
  * Represents the data for a custom popup
  */
 export type CustomPopupData = SharedPopupData & {
+    /**
+     * The type of the popup
+     */
     type: Extract<PopupType, 'custom'>;
     /**
      * The HTML element to use as the content of the custom popup
