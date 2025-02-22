@@ -33,18 +33,6 @@
     }
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
 .siteguide {
     color: var(--sg-text);
     box-sizing: border-box;
@@ -141,11 +129,11 @@
     font-size: 14px;
     line-height: 20px;
     transition: background-color 0.3s ease-out;
+    color: var(--sg-mono-100);
 }
 
 .siteguide-button-secondary {
     background-color: var(--secondary);
-    color: var(--sg-text);
 }
 
 .siteguide-button-secondary:hover {
@@ -154,7 +142,6 @@
 
 .siteguide-button-primary {
     background-color: var(--primary);
-    color: #fff;
 }
 
 .siteguide-button-primary:hover {

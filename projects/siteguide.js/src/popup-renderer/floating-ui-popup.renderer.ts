@@ -23,8 +23,8 @@ export class FloatingUiPopupRenderer implements IRenderer {
                 throw new Error('Missing popup creator strategy');
             }
 
-            popup.style.animation = 'none';
-            popup.style.opacity = '0';
+            popup.style.display = 'none';
+            popup.classList.remove(step.tour.config.animationClass);
             if (step.hostElement) {
                 popup.style.position = getPositionType(step.hostElement);
             } else {
@@ -46,9 +46,9 @@ export class FloatingUiPopupRenderer implements IRenderer {
                 return delay(400);
             })
             .then(() => {
+                popup.style.display = 'block';
                 this.updatePosition(popup, step);
-                popup.style.opacity = '1';
-                popup.style.animation = 'fadeIn 0.3s ease-out';
+                popup.classList.add(step.tour.config.animationClass);
             });
     }
 
@@ -75,14 +75,16 @@ export class FloatingUiPopupRenderer implements IRenderer {
                 Object.assign(popup.style, {
                     top: `${y - scrollTop}px`,
                     left: `${x}px`,
-                    transform: '',
+                    marginTop: '0',
+                    marginLeft: '0',
                 });
             });
         } else {
             Object.assign(popup.style, {
                 top: '50%',
                 left: '50%',
-                transform: 'translate(-50%, -50%)',
+                marginTop: `-${popup.clientHeight / 2}px`,
+                marginLeft: `-${popup.clientWidth / 2}px`,
             });
         }
     }
