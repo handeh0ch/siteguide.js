@@ -24,7 +24,7 @@ export class HighlightRenderer implements IRenderer {
             helper.style.top = '50%';
             helper.style.left = '50%';
             helper.style.transform = 'translate(-50%, -50%)';
-            helper.style.borderWidth = '0';
+            helper.style.opacity = '0';
             return;
         }
 
@@ -35,10 +35,10 @@ export class HighlightRenderer implements IRenderer {
             helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;
 
         helper.style.transform = '';
-        helper.style.borderWidth = '2px';
         helper.style.left = `${rect.left - padding}px`;
         helper.style.top = `${rect.top + scrollTop - padding}px`;
         helper.style.width = `${rect.width + 2 * padding}px`;
         helper.style.height = `${rect.height + 2 * padding}px`;
+        helper.style.opacity = '1';
     }
 }

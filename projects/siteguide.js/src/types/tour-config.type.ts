@@ -42,9 +42,9 @@ export type TourConfig = {
     closeIcon?: PopupCloseIconElement;
     /**
      * Indicates if the arrow should be shown
-     * @default true
+     * @default false
      */
-    enableArrow?: boolean;
+    disableArrow?: boolean;
     /**
      * Configuration for the helper layout.
      */
