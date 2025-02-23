@@ -54,7 +54,7 @@ export class Tour implements ITour {
             },
             allowClickoutClose: config.allowClickoutClose ?? false,
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
-            enableArrow: config.enableArrow ?? true,
+            disableArrow: config.disableArrow ?? false,
             highlight: {
                 disable: config.highlight?.disable ?? false,
                 padding: config.highlight?.padding ?? 8,
@@ -96,9 +96,8 @@ export class Tour implements ITour {
 
         if (!this._config.highlight.disable) {
             this._highlight = createElement('div', [
-                isDefined(this._config.highlight.class)
-                    ? this._config.highlight.class
-                    : `${this._config.classPrefix}-highlight`,
+                this._config.highlight.class,
+                `${this._config.classPrefix}-highlight`,
             ]);
             document.body.appendChild(this._highlight);
         }
