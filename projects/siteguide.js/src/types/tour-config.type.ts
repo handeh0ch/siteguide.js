@@ -54,6 +54,7 @@ export type TourConfig = {
         padding?: number;
         /**
          * The class to apply to the highlight
+         * @default 'siteguide-highlight'
          */
         class?: string;
     };
