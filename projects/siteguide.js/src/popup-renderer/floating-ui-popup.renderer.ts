@@ -1,4 +1,12 @@
-import { autoPlacement, computePosition, Middleware, offset, Placement } from '@floating-ui/dom';
+import {
+    arrow,
+    autoPlacement,
+    computePosition,
+    ComputePositionReturn,
+    Middleware,
+    offset,
+    Placement,
+} from '@floating-ui/dom';
 import type { ITourStep } from 'interfaces/tour.interface';
 import type { PopupType } from '../types/popup.type';
 import { delay, isDefined, isNullOrUndefined } from '../utils/base.util';
@@ -9,8 +17,17 @@ import { CustomStepRenderer } from './strategies/custom-step.renderer';
 import { TextStepRenderer } from './strategies/text-step.renderer';
 import { updatePopupLayout } from './utils/update-popup-layout.util';
 
+type StaticSide = Extract<Placement, 'top' | 'right' | 'bottom' | 'left'>;
+
 export class FloatingUiPopupRenderer implements IRenderer {
     private readonly _renderContentStrategy: Map<PopupType, IPopupContentRenderer> = new Map();
+
+    private readonly _staticSides: Record<StaticSide, string> = {
+        top: 'bottom',
+        right: 'left',
+        bottom: 'top',
+        left: 'right',
+    };
 
     constructor() {
         this.setUpStrategies();
@@ -54,39 +71,75 @@ export class FloatingUiPopupRenderer implements IRenderer {
 
     /** @inheritdoc */
     public updatePosition(popup: HTMLElement, step: ITourStep): void {
+        if (isDefined(step.hostElement)) {
+            this.renderFloatingPopup(popup, step);
+        } else {
+            this.renderCenterPopup(popup);
+        }
+    }
+
+    private renderFloatingPopup(popup: HTMLElement, step: ITourStep): void {
         const scrollTop: number =
             popup.style.position === 'fixed' ? window.scrollY || document.documentElement.scrollTop : 0;
 
-        const middleware: Middleware[] = [];
-        const placement: Placement | undefined =
+        const arrowEl: HTMLDivElement | null = popup.querySelector(`.${step.tour.config.classPrefix}-arrow`);
+
+        const middlewares: Middleware[] = [];
+
+        const primaryPlacement: Placement | undefined =
             isDefined(step.popupData.position) && step.popupData.position !== 'auto'
                 ? (step.popupData.position as Placement)
                 : undefined;
 
-        if (step.popupData.position === 'auto' || isNullOrUndefined(placement)) {
-            middleware.push(autoPlacement());
+        const arrowLen: number = arrowEl?.offsetWidth ?? 10;
+        const floatingOffset: number = Math.sqrt(2 * arrowLen ** 2) / 2 + step.tour.config.highlight.padding;
+
+        middlewares.push(offset(floatingOffset));
+
+        if (step.popupData.position === 'auto' || isNullOrUndefined(primaryPlacement)) {
+            middlewares.push(autoPlacement());
         }
 
-        if (step.hostElement) {
-            computePosition(step.hostElement, popup, {
-                placement,
-                middleware: [...middleware, offset(20)],
-            }).then(({ x, y }) => {
-                Object.assign(popup.style, {
-                    top: `${y - scrollTop}px`,
-                    left: `${x}px`,
-                    marginTop: '0',
-                    marginLeft: '0',
-                });
-            });
-        } else {
-            Object.assign(popup.style, {
-                top: '50%',
-                left: '50%',
-                marginTop: `-${popup.clientHeight / 2}px`,
-                marginLeft: `-${popup.clientWidth / 2}px`,
-            });
+        if (step.tour.config.enableArrow && isDefined(arrowEl)) {
+            middlewares.push(arrow({ element: arrowEl }));
         }
+
+        computePosition(step.hostElement!, popup, {
+            placement: primaryPlacement,
+            middleware: [...middlewares],
+        }).then(({ x, y, middlewareData, placement }: ComputePositionReturn) => {
+            Object.assign(popup.style, {
+                top: `${y - scrollTop}px`,
+                left: `${x}px`,
+                marginTop: '0',
+                marginLeft: '0',
+            });
+
+            const side: StaticSide = placement.split('-')[0] as StaticSide;
+
+            const staticSide: string = this._staticSides[side];
+
+            if (middlewareData.arrow && isDefined(arrowEl)) {
+                const { x, y } = middlewareData.arrow;
+                Object.assign(arrowEl.style, {
+                    left: x != null ? `${x}px` : '',
+                    top: y != null ? `${y}px` : '',
+                    right: '',
+                    bottom: '',
+                    [staticSide]: `${-arrowLen / 2}px`,
+                    transform: 'rotate(45deg)',
+                });
+            }
+        });
+    }
+
+    private renderCenterPopup(popup: HTMLElement): void {
+        Object.assign(popup.style, {
+            top: '50%',
+            left: '50%',
+            marginTop: `-${popup.clientHeight / 2}px`,
+            marginLeft: `-${popup.clientWidth / 2}px`,
+        });
     }
 
     private setUpStrategies(): void {

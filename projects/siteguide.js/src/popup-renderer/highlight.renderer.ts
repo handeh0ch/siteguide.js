@@ -29,17 +29,16 @@ export class HighlightRenderer implements IRenderer {
         }
 
         const rect: DOMRect = step.hostElement.getBoundingClientRect();
-        const paddingX: number = step.tour.config.highlight?.paddingX ?? 8;
-        const paddingY: number = step.tour.config.highlight?.paddingY ?? 8;
+        const padding: number = step.tour.config.highlight?.padding ?? 8;
 
         const scrollTop: number =
             helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;
 
         helper.style.transform = '';
         helper.style.borderWidth = '2px';
-        helper.style.left = `${rect.left - paddingX}px`;
-        helper.style.top = `${rect.top + scrollTop - paddingY}px`;
-        helper.style.width = `${rect.width + 2 * paddingX}px`;
-        helper.style.height = `${rect.height + 2 * paddingY}px`;
+        helper.style.left = `${rect.left - padding}px`;
+        helper.style.top = `${rect.top + scrollTop - padding}px`;
+        helper.style.width = `${rect.width + 2 * padding}px`;
+        helper.style.height = `${rect.height + 2 * padding}px`;
     }
 }

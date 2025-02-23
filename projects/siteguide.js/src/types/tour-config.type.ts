@@ -3,6 +3,13 @@ import type { DeepRequired } from './utility.type';
 export type PopupCloseIconElement = InnerHTML | HTMLElement;
 
 /**
+ * The function to translate the tokens
+ * @param {string} token - The token to translate
+ * @returns {string} The translated string
+ */
+export type TranslateFn = (token: string) => string;
+
+/**
  * Represents the configuration for a tour.
  */
 export type TourConfig = {
@@ -34,6 +41,11 @@ export type TourConfig = {
      */
     closeIcon?: PopupCloseIconElement;
     /**
+     * Indicates if the arrow should be shown
+     * @default true
+     */
+    enableArrow?: boolean;
+    /**
      * Configuration for the helper layout.
      */
     highlight?: {
@@ -46,14 +58,10 @@ export type TourConfig = {
          * The horizontal padding for the helper layout.
          * @default 8
          */
-        paddingX?: number;
-        /**
-         * The vertical padding for the helper layout.
-         * @default 8
-         */
-        paddingY?: number;
+        padding?: number;
         /**
          * The class to apply to the highlight
+         * @default 'siteguide-highlight'
          */
         class?: string;
     };
@@ -63,6 +71,10 @@ export type TourConfig = {
      * @default 'siteguide-animation'
      */
     animationClass?: string;
+    /**
+     * The function to translate the tokens
+     */
+    translateFn?: TranslateFn;
 };
 
 /**

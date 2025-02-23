@@ -3,6 +3,8 @@
  * @template T The type to make deep required
  * @returns A type that represents a deep required version of T
  */
-export type DeepRequired<T> = Required<{
-    [Prop in keyof T]: T[Prop] extends object | undefined ? DeepRequired<Required<T[Prop]>> : T[Prop];
-}>;
+export type DeepRequired<T> = T extends (...args: any[]) => any
+    ? T
+    : T extends object
+      ? { [K in keyof T]-?: DeepRequired<T[K]> }
+      : T;

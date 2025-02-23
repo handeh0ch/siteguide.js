@@ -25,7 +25,7 @@ export class TextStepRenderer implements IPopupContentRenderer {
                 `${tourConfig.classPrefix}-description`,
                 `${popupData.customization?.descriptionClass ?? ''}`,
             ]);
-            description.innerText = popupData.text;
+            description.innerText = tourConfig.translateFn(popupData.text);
             content.appendChild(description);
         }
     }
