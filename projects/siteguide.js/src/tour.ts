@@ -30,12 +30,6 @@ export class Tour implements ITour {
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
 
-    /**
-     * TODO remove
-     * @deprecated remove later
-     */
-    public isStarted: boolean = false;
-
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
 
@@ -52,6 +46,7 @@ export class Tour implements ITour {
             classPrefix: config.classPrefix ?? 'siteguide',
             animationClass: config.animationClass ?? 'siteguide-animation',
             allowClose: config.allowClose ?? true,
+            // @ts-expect-error
             scrollTo: config.scrollTo ?? {
                 behavior: 'smooth',
                 block: 'center',
@@ -65,6 +60,7 @@ export class Tour implements ITour {
                 padding: config.highlight?.padding ?? 8,
                 class: config.highlight?.class ?? 'siteguide-highlight',
             },
+            translateFn: config.translateFn ?? ((token: string) => token),
         };
     }
 
@@ -95,8 +91,6 @@ export class Tour implements ITour {
     }
 
     public start(): void {
-        this.isStarted = true;
-
         this._popup = createElement('div', [this._config.classPrefix]);
         document.body.appendChild(this._popup);
 
@@ -118,8 +112,6 @@ export class Tour implements ITour {
     }
 
     public complete(): void {
-        this.isStarted = false;
-
         if (this._popup) {
             document.body.removeChild(this._popup);
         }
@@ -176,7 +168,7 @@ export class Tour implements ITour {
 
     private getBodyResizeObserver(): ResizeObserver {
         const observer: ResizeObserver = new ResizeObserver(() => {
-            if (!this.isStarted || !this._activeStep) {
+            if (!this._activeStep) {
                 return;
             }
 

@@ -35,7 +35,7 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
         `${tour.config.classPrefix}-title`,
         `${popupData.customization?.titleClass ?? ''}`,
     ]);
-    title.innerHTML = popupData.title ?? '';
+    title.innerHTML = tour.config.translateFn(popupData.title ?? '');
     header.appendChild(title);
 
     if (tour.config.allowClose) {
@@ -64,8 +64,6 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     }
 
     popupData.buttonList.forEach((button: TourButtonConfig) => {
-        button.action = button.action.bind(tour);
-
         const buttonClassList: string[] = [`${tour.config.classPrefix}-button`, button.class ?? ''];
         if (isNullOrUndefined(button.type) || button.type === 'secondary') {
             buttonClassList.push(`${tour.config.classPrefix}-button-secondary`);
@@ -80,8 +78,7 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
         }
 
         const buttonElement: HTMLButtonElement = createElement('button', buttonClassList);
-
-        buttonElement.innerText = button.text;
+        buttonElement.innerText = tour.config.translateFn(button.text);
 
         buttonElement.onclick = (e: MouseEvent): void => {
             button.action.call(tour);

@@ -3,6 +3,13 @@ import type { DeepRequired } from './utility.type';
 export type PopupCloseIconElement = InnerHTML | HTMLElement;
 
 /**
+ * The function to translate the tokens
+ * @param {string} token - The token to translate
+ * @returns {string} The translated string
+ */
+export type TranslateFn = (token: string) => string;
+
+/**
  * Represents the configuration for a tour.
  */
 export type TourConfig = {
@@ -64,6 +71,10 @@ export type TourConfig = {
      * @default 'siteguide-animation'
      */
     animationClass?: string;
+    /**
+     * The function to translate the tokens
+     */
+    translateFn?: TranslateFn;
 };
 
 /**
