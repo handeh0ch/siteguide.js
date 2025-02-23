@@ -11,6 +11,9 @@ Siteguide has a default styling that you can override with your own styles. I tr
 
 ## Fully override styles
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 First of all you can not include the default style file `siteguide.css` in your project.
 
 Then you have an option to fully override the styles by setting the `classPrefix` option. This will add a custom prefix to all the classes used in the library instead of default `siteguide` prefix.
@@ -21,11 +24,133 @@ const tour: Tour = new Tour({
 });
 ```
 
-This approach also helps you to provide own styles for each tour instance. 
+<Tabs>
+    <TabItem value="before" label="Before">
+        ```css
+.siteguide {
+
+}
+
+.siteguide-animation {
+
+}
+
+.siteguide-arrow {
+
+}
+
+.siteguide-highlight {
+
+}
+
+.siteguide-header {
+
+}
+
+// ...
+        ```
+    </TabItem>
+    <TabItem value="after" label="After">
+        ```css
+.custom-prefix {
+
+}
+
+.custom-prefix-animation {
+
+}
+
+.custom-prefix-arrow {
+
+}
+
+.custom-prefix-highlight {
+
+}
+
+.custom-prefix-header {
+
+}
+
+// ...
+        ```
+    </TabItem>
+</Tabs>
+
+This approach also helps you to write your own styles for entire tour from scratch.
+
+## Highlight styles
+
+### Disabling
+
+You can disable the highlight by setting the `disable` option to `true`.
+
+```js
+new Tour({
+    highlight: {
+        disable: true,
+    },
+});
+```
+
+### Custom styles
+
+You can also provide custom styles for the highlight. This is useful if you want to add some custom styles for the highlight, but not override the entire library styles.
+
+
+```js
+new Tour({
+    highlight: {
+        class: 'custom-highlight',
+    },
+});
+```
+
+```css
+.custom-highlight {
+    border: 5px solid red;
+}
+```
+
+It will add a custom styles to the highlight element with keep the default styles for the rest of the highlight.
+
+### Padding
+
+You can also provide a custom padding for the highlight.
+
+```js
+new Tour({
+    highlight: {
+        padding: 10,
+    },
+});
+```
+
+## Custom animation
+
+You can also provide a custom animation for the popup. Default animation will of popup appearance will be overridden.
+
+```js
+new Tour({
+    animation: 'custom-animation',
+});
+```
+
+```css
+.custom-animation {
+    animation: bounceIn 0.5s ease-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+```
 
 ## Custom step styles
 
-You can also provide custom styles for each step. This is useful if you want to add some custom styles for a specific step.
+You can also provide custom styles for each step. This is useful if you want to add some custom styles for a specific step or make each step look different.
 
 ```js
 tour.addStep({
