@@ -59,10 +59,10 @@ export class Tour implements ITour {
             },
             allowClickoutClose: config.allowClickoutClose ?? false,
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
+            enableArrow: config.enableArrow ?? true,
             highlight: {
                 disable: config.highlight?.disable ?? false,
-                paddingX: config.highlight?.paddingX ?? 8,
-                paddingY: config.highlight?.paddingY ?? 8,
+                padding: config.highlight?.padding ?? 8,
                 class: config.highlight?.class ?? 'siteguide-highlight',
             },
         };

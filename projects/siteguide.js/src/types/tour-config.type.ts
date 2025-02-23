@@ -34,6 +34,11 @@ export type TourConfig = {
      */
     closeIcon?: PopupCloseIconElement;
     /**
+     * Indicates if the arrow should be shown
+     * @default true
+     */
+    enableArrow?: boolean;
+    /**
      * Configuration for the helper layout.
      */
     highlight?: {
@@ -46,12 +51,7 @@ export type TourConfig = {
          * The horizontal padding for the helper layout.
          * @default 8
          */
-        paddingX?: number;
-        /**
-         * The vertical padding for the helper layout.
-         * @default 8
-         */
-        paddingY?: number;
+        padding?: number;
         /**
          * The class to apply to the highlight
          */
