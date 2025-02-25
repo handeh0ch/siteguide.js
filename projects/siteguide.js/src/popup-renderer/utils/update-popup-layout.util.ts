@@ -17,7 +17,10 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     popup.className = `${tour.config.classPrefix} ${tour.config.animationClass}`;
 
     if (!tour.config.arrow.disable) {
-        const arrow: HTMLDivElement = createElement('div', [`${tour.config.classPrefix}-arrow`]);
+        const arrow: HTMLDivElement = createElement('div', [
+            tour.config.arrow.class ?? '',
+            `${tour.config.classPrefix}-arrow`,
+        ]);
         popup.appendChild(arrow);
     }
 

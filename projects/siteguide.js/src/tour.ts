@@ -56,12 +56,12 @@ export class Tour implements ITour {
             closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
             arrow: {
                 disable: config.arrow?.disable ?? false,
-                class: config.arrow?.class ?? 'siteguide-arrow',
+                class: config.arrow?.class ?? '',
             },
             highlight: {
                 disable: config.highlight?.disable ?? false,
                 padding: config.highlight?.padding ?? 8,
-                class: config.highlight?.class ?? 'siteguide-highlight',
+                class: config.highlight?.class ?? '',
             },
             translateFn: config.translateFn ?? ((token: string) => token),
         };
