@@ -1,21 +1,20 @@
-import type { ITourStep } from './interfaces/tour.interface';
-import { ITour } from './interfaces/tour.interface';
-import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
-import type { PopupData } from './types/popup.type';
+import { IRenderer } from './popup-renderer/interfaces/renderer.interface';
+import { Tour } from './tour';
+import { PopupData } from './types/popup.type';
 import { StepDirection } from './types/step-direction.type';
-import type { PopupHost, StepId, TourStepConfig } from './types/tour-step-config.type';
+import { PopupHost, TourStepConfig } from './types/tour-step-config.type';
 import { isDefined, isNullOrUndefined } from './utils/base.util';
 
-export class TourStep implements ITourStep {
+export class TourStep {
     public get isFirst(): boolean {
-        return this.index === 0;
+        return this._index === 0;
     }
 
-    public get nextStep(): ITourStep | null {
+    public get nextStep(): TourStep | null {
         return this.tour.stepList[this.tour.stepList.indexOf(this) + 1] ?? null;
     }
 
-    public get prevStep(): ITourStep | null {
+    public get prevStep(): TourStep | null {
         return this.tour.stepList[this.tour.stepList.indexOf(this) - 1] ?? null;
     }
 
@@ -31,10 +30,18 @@ export class TourStep implements ITourStep {
         return this._hostElement;
     }
 
-    public readonly id: StepId;
+    public get index(): number | null {
+        return this._index;
+    }
+
+    public set index(value: number) {
+        this._index = value;
+    }
+
     public readonly popupData: PopupData;
-    public readonly tour: ITour;
-    public readonly index: number | null;
+    public readonly tour: Tour;
+
+    private _index: number | null;
 
     private _hostElement: HTMLElement | null = null;
 
@@ -43,11 +50,10 @@ export class TourStep implements ITourStep {
     private readonly _popupRenderer: IRenderer;
     private readonly _highlightRenderer: IRenderer;
 
-    public constructor(tour: ITour, config: TourStepConfig) {
-        this.id = config.id;
+    public constructor(tour: Tour, config: TourStepConfig) {
         this.popupData = config.popup;
         this.tour = tour;
-        this.index = config.index ?? null;
+        this._index = config.index ?? null;
         this._hostData = config.host;
         this._popupRenderer = tour.popupRenderer;
         this._highlightRenderer = tour.highlightRenderer;
@@ -70,6 +76,10 @@ export class TourStep implements ITourStep {
 
         if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
             renderersPromises.push(this._highlightRenderer.render(this.tour.highlight, this));
+        }
+
+        if (this.tour.config.highlight.disable && isDefined(this.tour.highlight)) {
+            this._highlightRenderer.render(this.tour.highlight, {} as TourStep);
         }
 
         await Promise.all(renderersPromises);

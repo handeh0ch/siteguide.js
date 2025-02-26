@@ -21,6 +21,11 @@ export type TourConfig = {
      */
     classPrefix?: string;
     /**
+     * Additional class to provide for popup
+     * @default ''
+     */
+    class?: string;
+    /**
      * Indicates if the tour popup can be closed by the user
      * @default true
      */
@@ -50,8 +55,8 @@ export type TourConfig = {
          */
         disable?: boolean;
         /**
-         * The class to apply to the arrow
-         * @default 'siteguide-arrow'
+         * Additional class to apply to the arrow
+         * @default ''
          */
         class?: string;
     };
@@ -70,8 +75,8 @@ export type TourConfig = {
          */
         padding?: number;
         /**
-         * The class to apply to the highlight
-         * @default 'siteguide-highlight'
+         * Additional class to apply to the highlight
+         * @default ''
          */
         class?: string;
     };
