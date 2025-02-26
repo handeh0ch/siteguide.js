@@ -80,12 +80,14 @@
     align-items: center;
     width: 100%;
     padding: var(--padding-m) var(--padding-2l) 0;
+    font-family: inherit;
 }
 
 .siteguide-content {
     width: 100%;
     padding: var(--padding-m) var(--padding-2l);
     overflow-y: auto;
+    font-family: inherit;
 }
 
 .siteguide-content::-webkit-scrollbar {
@@ -102,6 +104,7 @@
     font-size: var(--sg-text-l);
     font-weight: 800;
     color: var(--sg-text);
+    font-family: inherit;
 }
 
 .siteguide-image {
@@ -116,6 +119,7 @@
     font-size: 14px;
     font-weight: 400;
     color: var(--sg-text);
+    font-family: inherit;
 }
 
 .siteguide-footer {
@@ -137,6 +141,8 @@
     line-height: 20px;
     transition: background-color 0.3s ease-out;
     color: var(--sg-mono-100);
+    border: none;
+    font-family: inherit;
 }
 
 .siteguide-button-secondary {

@@ -7,7 +7,7 @@ import {
     offset,
     Placement,
 } from '@floating-ui/dom';
-import type { ITourStep } from 'interfaces/tour.interface';
+import { TourStep } from '../tour-step';
 import type { PopupType } from '../types/popup.type';
 import { delay, isDefined, isNullOrUndefined } from '../utils/base.util';
 import { getPositionType } from '../utils/is-fixed.util';
@@ -34,7 +34,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
     }
 
     /** @inheritdoc */
-    public render(popup: HTMLElement, step: ITourStep): Promise<void> {
+    public render(popup: HTMLElement, step: TourStep): Promise<void> {
         return new Promise<void>((resolve) => {
             if (!this._renderContentStrategy.has(step.popupData.type)) {
                 throw new Error('Missing popup creator strategy');
@@ -63,14 +63,14 @@ export class FloatingUiPopupRenderer implements IRenderer {
                 return delay(400);
             })
             .then(() => {
-                popup.style.display = 'block';
+                popup.style.display = 'flex';
                 this.updatePosition(popup, step);
                 popup.classList.add(step.tour.config.animationClass);
             });
     }
 
     /** @inheritdoc */
-    public updatePosition(popup: HTMLElement, step: ITourStep): void {
+    public updatePosition(popup: HTMLElement, step: TourStep): void {
         if (isDefined(step.hostElement)) {
             this.renderFloatingPopup(popup, step);
         } else {
@@ -78,7 +78,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
         }
     }
 
-    private renderFloatingPopup(popup: HTMLElement, step: ITourStep): void {
+    private renderFloatingPopup(popup: HTMLElement, step: TourStep): void {
         const scrollTop: number =
             popup.style.position === 'fixed' ? window.scrollY || document.documentElement.scrollTop : 0;
 

@@ -1,4 +1,4 @@
-import type { ITour } from 'interfaces/tour.interface';
+import { Tour } from '../../tour';
 import type { TourButtonConfig } from '../../types/button-config.type';
 import type { PopupData } from '../../types/popup.type';
 import type { PopupCloseIconElement } from '../../types/tour-config.type';
@@ -12,11 +12,11 @@ import { createElement } from '../../utils/create-element.util';
  * @param {PopupData} popupData - The data containing configuration for the popup, including button configurations.
  * @param {Tour} tour - The tour instance.
  */
-export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: ITour): void {
+export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: Tour): void {
     popup.innerHTML = '';
-    popup.className = `${tour.config.classPrefix} ${tour.config.animationClass}`;
+    popup.className = `${tour.config.class ?? ''} ${tour.config.classPrefix} ${tour.config.animationClass}`;
 
-    if (!tour.config.arrow.disable) {
+    if (!tour.config.arrow.disable && tour.activeStep?.hasHost) {
         const arrow: HTMLDivElement = createElement('div', [
             tour.config.arrow.class ?? '',
             `${tour.config.classPrefix}-arrow`,
@@ -111,7 +111,7 @@ function resolveCloseIcon(closeButton: HTMLButtonElement, icon: PopupCloseIconEl
  * @param {Tour} tour - The tour instance.
  * @returns {TourButtonConfig[]} The default button configurations.
  */
-function getDefaultButtonList(tour: ITour): TourButtonConfig[] {
+function getDefaultButtonList(tour: Tour): TourButtonConfig[] {
     return [
         {
             text: 'Back',

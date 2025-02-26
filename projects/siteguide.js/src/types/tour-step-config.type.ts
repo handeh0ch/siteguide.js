@@ -17,16 +17,10 @@ import type { PopupData } from './popup.type';
  */
 export type PopupHost = string | Element | (() => Element | string);
 
-export type StepId = string;
-
 /**
  * Represents the configuration for a single step in a tour
  */
 export type TourStepConfig = {
-    /**
-     * The unique identifier for the tour step.
-     */
-    id: StepId;
     /**
      * The index of the step in the tour
      */

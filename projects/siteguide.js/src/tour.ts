@@ -1,18 +1,35 @@
-import type { ITourStep } from 'interfaces/tour.interface';
-import { ITour } from 'interfaces/tour.interface';
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
 import { HighlightRenderer } from './popup-renderer/highlight.renderer';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
 import type { RequiredTourConfig, TourConfig } from './types/tour-config.type';
-import type { StepId, TourStepConfig } from './types/tour-step-config.type';
-import { isDefined } from './utils/base.util';
+import type { TourStepConfig } from './types/tour-step-config.type';
+import { isDefined, isNullOrUndefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
+import { deepMerge } from './utils/deep-merge.util';
 import { getCloseIconHTML } from './utils/get-close-icon.util';
 
-export class Tour implements ITour {
-    public get stepList(): readonly ITourStep[] {
-        return this._stepList as Readonly<ITourStep[]>;
+class SiteguideData {
+    public get isActive(): boolean {
+        return isDefined(this.activeTour);
+    }
+
+    public get activeTour(): Tour | null {
+        return this._activeTour;
+    }
+
+    private _activeTour: Tour | null = null;
+
+    public setActiveTour(tour: Tour | null): void {
+        this._activeTour = tour;
+    }
+}
+
+export const SiteguideBase = new SiteguideData();
+
+export class Tour {
+    public get stepList(): readonly TourStep[] {
+        return this._stepList as Readonly<TourStep[]>;
     }
 
     public get config(): RequiredTourConfig {
@@ -27,23 +44,27 @@ export class Tour implements ITour {
         return this._highlight;
     }
 
+    public get activeStep(): TourStep | null {
+        return this._activeStep;
+    }
+
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
 
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
 
-    private _stepList: ITourStep[] = [];
-    private _activeStep: ITourStep | null = null;
+    private _stepList: TourStep[] = [];
+    private _activeStep: TourStep | null = null;
     private _bodyResizeObserver: ResizeObserver;
     private _config: RequiredTourConfig;
-    private readonly _stepMap: Map<StepId, TourStep> = new Map();
 
     public constructor(config: TourConfig) {
         this._bodyResizeObserver = this.getBodyResizeObserver();
 
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
+            class: '',
             animationClass: config.animationClass ?? 'siteguide-animation',
             allowClose: config.allowClose ?? true,
             // @ts-expect-error
@@ -68,32 +89,51 @@ export class Tour implements ITour {
     }
 
     public addStep(config: TourStepConfig): void {
-        if (this._stepMap.has(config.id)) {
-            throw new Error('Step with provided id has been already registered');
+        if (isNullOrUndefined(config.index)) {
+            config.index = this._stepList.length;
         }
 
         const step: TourStep = new TourStep(this, config);
 
-        if (isDefined(config.index)) {
-            this._stepList.splice(config.index, 0, step);
-        } else {
-            this._stepList.push(step);
-        }
-
-        this._stepMap.set(config.id, step);
+        this._stepList.push(step);
+        this._stepList.sort((a, b) => a.index! - b.index!);
     }
 
     public addSteps(steps: TourStepConfig[]): void {
         steps.forEach((step: TourStepConfig) => this.addStep(step));
     }
 
-    public removeStep(stepId: StepId): void {
-        this._stepList = this._stepList.filter((step: ITourStep) => stepId !== step.id);
+    public addNext(config: TourStepConfig): void {
+        if (isNullOrUndefined(this._activeStep)) {
+            this.addStep(config);
 
-        this._stepMap.delete(stepId);
+            return;
+        } else {
+            const activeStepIndex: number = this._stepList.findIndex((s) => s === this._activeStep);
+            config.index = activeStepIndex + 1;
+
+            const step: TourStep = new TourStep(this, config);
+
+            this._stepList.splice(config.index, 0, step);
+
+            for (let i = activeStepIndex + 2; i < this._stepList.length; i++) {
+                this._stepList[i].index! += 1;
+            }
+
+            this._stepList.sort((a, b) => a.index! - b.index!);
+        }
+    }
+
+    public removeStep(index: number): void {
+        this._stepList = this._stepList.filter((step: TourStep) => index !== step.index);
     }
 
     public start(): void {
+        if (isDefined(SiteguideBase.activeTour)) {
+            return;
+        }
+
+        SiteguideBase.setActiveTour(this);
         this._popup = createElement('div', [this._config.classPrefix]);
         document.body.appendChild(this._popup);
 
@@ -123,7 +163,9 @@ export class Tour implements ITour {
         }
 
         this._activeStep = null;
+
         // this.dispatch('complete');
+        SiteguideBase.setActiveTour(null);
     }
 
     public prev(): void {
@@ -161,11 +203,7 @@ export class Tour implements ITour {
     }
 
     public setConfig(config: TourConfig): void {
-        // @ts-expect-error
-        this._config = {
-            ...this._config,
-            ...config,
-        };
+        this._config = deepMerge(this._config, config as RequiredTourConfig);
     }
 
     private getBodyResizeObserver(): ResizeObserver {
