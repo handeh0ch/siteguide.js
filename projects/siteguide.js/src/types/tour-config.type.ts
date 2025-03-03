@@ -80,7 +80,18 @@ export type TourConfig = {
          */
         class?: string;
     };
-
+    progress?: {
+        /**
+         * Disable tour progress display
+         * @default true
+         */
+        disable?: boolean;
+        /**
+         * Progress text to show
+         * @default 'Step {{currentStep}} of {{totalSteps}}'
+         */
+        text?: string;
+    };
     /**
      * The class to apply to the tour popup animation
      * @default 'siteguide-animation'

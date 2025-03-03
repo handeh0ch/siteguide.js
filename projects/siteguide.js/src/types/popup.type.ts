@@ -85,6 +85,10 @@ export type PopupCustomization = {
      */
     footerClass?: string;
     /**
+     * The CSS class to apply to the popup progress
+     */
+    progressClass?: string;
+    /**
      * The CSS class to apply to the popup image
      */
     imageClass?: string;

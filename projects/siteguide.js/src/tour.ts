@@ -48,6 +48,14 @@ export class Tour {
         return this._activeStep;
     }
 
+    public get activeStepIndex(): number | null {
+        if (!this._activeStep) {
+            return null;
+        }
+
+        return this.stepList.indexOf(this._activeStep);
+    }
+
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
 
@@ -84,13 +92,21 @@ export class Tour {
                 padding: config.highlight?.padding ?? 8,
                 class: config.highlight?.class ?? '',
             },
+            progress: {
+                disable: config.progress?.disable ?? true,
+                text: `Step {{currentStep}} of {{totalSteps}}`,
+            },
             translateFn: config.translateFn ?? ((token: string) => token),
         };
     }
 
     public addStep(config: TourStepConfig): void {
         if (isNullOrUndefined(config.index)) {
-            config.index = this._stepList.length;
+            const maxIndex = this._stepList.reduce((max, step) => {
+                return step.index !== null && step.index !== undefined && step.index > max ? step.index : max;
+            }, -1);
+
+            config.index = maxIndex + 1;
         }
 
         const step: TourStep = new TourStep(this, config);
@@ -101,27 +117,6 @@ export class Tour {
 
     public addSteps(steps: TourStepConfig[]): void {
         steps.forEach((step: TourStepConfig) => this.addStep(step));
-    }
-
-    public addNext(config: TourStepConfig): void {
-        if (isNullOrUndefined(this._activeStep)) {
-            this.addStep(config);
-
-            return;
-        } else {
-            const activeStepIndex: number = this._stepList.findIndex((s) => s === this._activeStep);
-            config.index = activeStepIndex + 1;
-
-            const step: TourStep = new TourStep(this, config);
-
-            this._stepList.splice(config.index, 0, step);
-
-            for (let i = activeStepIndex + 2; i < this._stepList.length; i++) {
-                this._stepList[i].index! += 1;
-            }
-
-            this._stepList.sort((a, b) => a.index! - b.index!);
-        }
     }
 
     public removeStep(index: number): void {

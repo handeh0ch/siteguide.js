@@ -19,6 +19,8 @@
     --padding-m: 12px;
     --padding-l: 16px;
     --padding-2l: 20px;
+    --sg-text-xs: 12px;
+    --sg-text-s: 14px;
     --sg-text-m: 16px;
     --sg-text-l: 18px;
 }
@@ -170,6 +172,12 @@
 
 .siteguide-button-link:hover {
     color: var(--primary-hover);
+}
+
+.siteguide-progress {
+    font-family: inherit;
+    font-size: var(--sg-text-s);
+    color: var(--sg-mono-800);
 }
 
 .siteguide-close {
