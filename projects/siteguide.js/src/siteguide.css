@@ -178,8 +178,6 @@
     font-family: inherit;
     font-size: var(--sg-text-s);
     color: var(--sg-mono-800);
-    margin-left: auto;
-    text-overflow: ellipsis;
 }
 
 .siteguide-close {
