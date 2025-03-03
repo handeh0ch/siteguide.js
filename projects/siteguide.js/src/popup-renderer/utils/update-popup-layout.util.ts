@@ -2,7 +2,7 @@ import { Tour } from '../../tour';
 import type { TourButtonConfig } from '../../types/button-config.type';
 import type { PopupData } from '../../types/popup.type';
 import type { PopupCloseIconElement } from '../../types/tour-config.type';
-import { isNullOrUndefined } from '../../utils/base.util';
+import { isDefined, isNullOrUndefined } from '../../utils/base.util';
 import { createElement } from '../../utils/create-element.util';
 
 /**
@@ -57,7 +57,7 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     ]);
     popup.appendChild(content);
 
-    const buttonList: HTMLDivElement = createElement('div', [
+    const footer: HTMLDivElement = createElement('div', [
         `${tour.config.classPrefix}-footer`,
         `${popupData.customization?.footerClass ?? ''}`,
     ]);
@@ -81,16 +81,33 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
         }
 
         const buttonElement: HTMLButtonElement = createElement('button', buttonClassList);
-        buttonElement.innerText = tour.config.translateFn(button.text);
+        buttonElement.innerHTML = tour.config.translateFn(button.text);
 
         buttonElement.onclick = (e: MouseEvent): void => {
             button.action.call(tour);
         };
 
-        buttonList.appendChild(buttonElement);
+        footer.appendChild(buttonElement);
     });
 
-    popup.appendChild(buttonList);
+    if (!tour.config.progress.disable && tour.config.progress.text) {
+        if (isDefined(tour.activeStepIndex)) {
+            const progressElement: HTMLParagraphElement = createElement('p', [
+                `${tour.config.classPrefix}-progress`,
+                `${popupData.customization?.progressClass ?? ''}`,
+            ]);
+
+            progressElement.innerHTML = formatProgress(
+                tour.config.progress.text,
+                tour.activeStepIndex + 1,
+                tour.stepList.length
+            );
+
+            footer.appendChild(progressElement);
+        }
+    }
+
+    popup.appendChild(footer);
 }
 
 /**
@@ -123,4 +140,17 @@ function getDefaultButtonList(tour: Tour): TourButtonConfig[] {
             action: tour.next,
         },
     ];
+}
+
+/**
+ * Process prgress temaplte string and insert numeric data on places
+ * @param template - string where to insert indexes
+ * @param currentStepIndex - currentStepIndex
+ * @param totalStepsAmount - total steps amount
+ * @returns modified string with pasted data
+ */
+function formatProgress(template: string, currentStepIndex: number, totalStepsAmount: number): string {
+    return template
+        .replace('{{currentStep}}', currentStepIndex.toString())
+        .replace('{{totalSteps}}', totalStepsAmount.toString());
 }
