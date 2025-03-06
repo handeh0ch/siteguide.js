@@ -108,7 +108,7 @@ export class Tour {
                 text: `Step {{currentStep}} of {{totalSteps}}`,
             },
             intersection: {
-                disable: config.intersection.disable ?? false,
+                disable: config.intersection?.disable ?? false,
             },
             keyboardControl: config.keyboardControl ?? false,
             translateFn: config.translateFn ?? ((token: string) => token),
