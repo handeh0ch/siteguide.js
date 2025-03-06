@@ -50,6 +50,10 @@ export type SharedPopupData = {
      * A collection of button configurations for the popup
      */
     buttonList?: TourButtonConfig[];
+    /**
+     * Next step will be achieved only if this function returns true
+     */
+    allowNext?: () => Promise<boolean>;
 };
 
 /**
@@ -68,10 +72,6 @@ export type PopupCustomization = {
      * The CSS class to apply to the popup title
      */
     titleClass?: string;
-    /**
-     * The CSS class to apply to the popup close button
-     */
-    closeButtonClass?: string;
     /**
      * The CSS class to apply to the popup content
      */
