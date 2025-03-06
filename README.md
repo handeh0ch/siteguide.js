@@ -18,17 +18,10 @@ The following example is a simple tour with two steps.
 ```javascript
 import { Tour } from 'siteguide.js';
 
-const tour = new Tour({
-    scrollTo: {
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-    },
-});
+const tour = new Tour({});
 
 const stepList = [
     {
-        id: '1',
         host: '.step-1',
         popup: {
             text: "I'm step 1",
@@ -37,7 +30,6 @@ const stepList = [
         },
     },
     {
-        id: '2',
         host: '.step-2',
         popup: {
             title: 'Step 2',
