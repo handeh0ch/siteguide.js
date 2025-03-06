@@ -236,6 +236,15 @@ export class Tour {
         // this.dispatch('next');
     }
 
+    public goTo(index: number): void {
+        if (index > this._stepList.length - 1) {
+            console.error('Provided index was larger than steps amount');
+            return;
+        }
+
+        this.changeStepTo(index, index > (this.activeStepIndex ?? -1) ? 'toNext' : 'fromBack');
+    }
+
     public setConfig(config: TourConfig): void {
         this._config = deepMerge(this._config, config as RequiredTourConfig);
     }
