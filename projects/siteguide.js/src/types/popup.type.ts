@@ -69,10 +69,6 @@ export type PopupCustomization = {
      */
     titleClass?: string;
     /**
-     * The CSS class to apply to the popup close button
-     */
-    closeButtonClass?: string;
-    /**
      * The CSS class to apply to the popup content
      */
     contentClass?: string;

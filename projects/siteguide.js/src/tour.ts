@@ -2,12 +2,13 @@ import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.rend
 import { HighlightRenderer } from './popup-renderer/highlight.renderer';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
+import type { StepDirection } from './types/step-direction.type';
 import type { RequiredTourConfig, TourConfig } from './types/tour-config.type';
 import type { TourStepConfig } from './types/tour-step-config.type';
 import { isDefined, isNullOrUndefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { deepMerge } from './utils/deep-merge.util';
-import { getCloseIconHTML } from './utils/get-close-icon.util';
+import { getDefaultCloseButton } from './utils/get-default-close-button.util';
 
 class SiteguideData {
     public get isActive(): boolean {
@@ -44,6 +45,10 @@ export class Tour {
         return this._highlight;
     }
 
+    public get intersection(): HTMLElement | null {
+        return this._intersection;
+    }
+
     public get activeStep(): TourStep | null {
         return this._activeStep;
     }
@@ -58,9 +63,11 @@ export class Tour {
 
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
+    public readonly intersectionRenderer: IRenderer = new HighlightRenderer();
 
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
+    private _intersection: HTMLElement | null = null;
 
     private _stepList: TourStep[] = [];
     private _activeStep: TourStep | null = null;
@@ -74,15 +81,19 @@ export class Tour {
             classPrefix: config.classPrefix ?? 'siteguide',
             class: '',
             animationClass: config.animationClass ?? 'siteguide-animation',
-            allowClose: config.allowClose ?? true,
+            close: {
+                button: config.close?.button ?? true,
+                clickout: config.close?.clickout ?? false,
+                esc: config.close?.esc ?? true,
+            },
             // @ts-expect-error
             scrollTo: config.scrollTo ?? {
                 behavior: 'smooth',
                 block: 'center',
                 inline: 'center',
             },
-            allowClickoutClose: config.allowClickoutClose ?? false,
-            closeIcon: config.closeIcon ?? getCloseIconHTML(config.classPrefix ?? 'siteguide'),
+            // @ts-expect-error
+            closeIcon: config.closeIcon ?? getDefaultCloseButton(config.classPrefix ?? 'siteguide'),
             arrow: {
                 disable: config.arrow?.disable ?? false,
                 class: config.arrow?.class ?? '',
@@ -96,6 +107,10 @@ export class Tour {
                 disable: config.progress?.disable ?? true,
                 text: `Step {{currentStep}} of {{totalSteps}}`,
             },
+            intersection: {
+                disable: config.intersection.disable ?? false,
+            },
+            keyboardControl: config.keyboardControl ?? false,
             translateFn: config.translateFn ?? ((token: string) => token),
         };
     }
@@ -124,8 +139,16 @@ export class Tour {
     }
 
     public start(): void {
-        if (isDefined(SiteguideBase.activeTour)) {
+        if (SiteguideBase.isActive) {
             return;
+        }
+
+        if (this.config.close.esc) {
+            document.addEventListener('keydown', this.closeOnEsc);
+        }
+
+        if (this.config.keyboardControl) {
+            document.addEventListener('keydown', this.keyboardControl);
         }
 
         SiteguideBase.setActiveTour(this);
@@ -140,9 +163,10 @@ export class Tour {
             document.body.appendChild(this._highlight);
         }
 
-        // if (this._config.allowClickoutClose) {
-        //     document.body.addEventListener('click', this.complete.bind(this));
-        // }
+        if (this._config.intersection.disable) {
+            this._intersection = createElement('div', ['siteguide-intersection']);
+            document.body.appendChild(this._intersection);
+        }
 
         // this.dispatch('start');
         this.next();
@@ -157,10 +181,19 @@ export class Tour {
             document.body.removeChild(this._highlight);
         }
 
+        this._activeStep?.hide();
         this._activeStep = null;
 
         // this.dispatch('complete');
         SiteguideBase.setActiveTour(null);
+
+        if (this.config.close.esc) {
+            document.removeEventListener('keydown', this.closeOnEsc);
+        }
+
+        if (this.config.keyboardControl) {
+            document.removeEventListener('keydown', this.keyboardControl);
+        }
     }
 
     public prev(): void {
@@ -173,14 +206,14 @@ export class Tour {
             return;
         }
 
-        this._activeStep = this._stepList[stepIndex];
-        this._activeStep.show('fromBack');
+        this.changeStepTo(stepIndex, 'fromBack');
 
         // this.dispatch('prev');
         // this.dispatch('changeStep');
     }
 
     public next(): void {
+        // this.dispatch('afterChangeStep');
         const stepIndex: number = isDefined(this._activeStep)
             ? this._stepList.indexOf(this._activeStep) + 1
             : this._stepList.indexOf(this._stepList[0]);
@@ -190,15 +223,19 @@ export class Tour {
             return;
         }
 
-        this._activeStep = this._stepList[stepIndex];
-        this._activeStep.show('toNext');
+        this.changeStepTo(stepIndex, 'toNext');
 
         // this.dispatch('next');
-        // this.dispatch('changeStep');
     }
 
     public setConfig(config: TourConfig): void {
         this._config = deepMerge(this._config, config as RequiredTourConfig);
+    }
+
+    private changeStepTo(index: number, direction: StepDirection): void {
+        this._activeStep?.hide();
+        this._activeStep = this._stepList[index];
+        this._activeStep.show(direction);
     }
 
     private getBodyResizeObserver(): ResizeObserver {
@@ -220,4 +257,18 @@ export class Tour {
 
         return observer;
     }
+
+    private closeOnEsc = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') {
+            this.complete();
+        }
+    };
+
+    private keyboardControl = (event: KeyboardEvent): void => {
+        if (event.key === 'ArrowRight') {
+            this.next();
+        } else if (event.key === 'ArrowLeft') {
+            this.prev();
+        }
+    };
 }

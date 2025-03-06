@@ -49,7 +49,7 @@
     flex-direction: column;
     position: absolute;
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.066);
-    z-index: 1000001;
+    z-index: 1000003 !important;
     max-height: 400px;
 }
 
@@ -62,6 +62,13 @@
     width: 10px;
     height: 10px;
     background-color: inherit;
+}
+
+.siteguide-intersection {
+    border-radius: 4px;
+    opacity: 0;
+    z-index: 1000002 !important;
+    position: absolute;
 }
 
 .siteguide-highlight {
@@ -181,8 +188,8 @@
 }
 
 .siteguide-close {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -192,7 +199,11 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    transition: background-color 0.3s ease-out;
+    transition:
+        color 0.3s ease-out,
+        background-color 0.3s ease-out;
+    border: none;
+    border-width: 0;
 }
 
 .siteguide-close:hover {
@@ -200,6 +211,8 @@
     color: #fff;
 }
 
-.siteguide-close-icon {
-    height: 10px;
+.siteguide-host {
+    z-index: 1000001 !important;
+    position: relative;
+    isolation: isolate;
 }

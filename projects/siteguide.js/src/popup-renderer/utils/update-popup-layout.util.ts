@@ -1,7 +1,6 @@
 import { Tour } from '../../tour';
 import type { TourButtonConfig } from '../../types/button-config.type';
 import type { PopupData } from '../../types/popup.type';
-import type { PopupCloseIconElement } from '../../types/tour-config.type';
 import { isDefined, isNullOrUndefined } from '../../utils/base.util';
 import { createElement } from '../../utils/create-element.util';
 
@@ -41,14 +40,9 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     title.innerHTML = tour.config.translateFn(popupData.title ?? '');
     header.appendChild(title);
 
-    if (tour.config.allowClose) {
-        const closeButton: HTMLButtonElement = createElement('button', [
-            `${tour.config.classPrefix}-close`,
-            `${popupData.customization?.closeButtonClass ?? ''}`,
-        ]);
-        resolveCloseIcon(closeButton, tour.config.closeIcon);
-        closeButton.onclick = tour.complete.bind(tour);
-        header.appendChild(closeButton);
+    if (tour.config.close.button) {
+        tour.config.closeIcon.onclick = tour.complete.bind(tour);
+        header.appendChild(tour.config.closeIcon as HTMLElement);
     }
 
     const content: HTMLDivElement = createElement('div', [
@@ -97,10 +91,8 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
                 `${popupData.customization?.progressClass ?? ''}`,
             ]);
 
-            progressElement.innerHTML = formatProgress(
-                tour.config.progress.text,
-                tour.activeStepIndex + 1,
-                tour.stepList.length
+            progressElement.innerHTML = tour.config.translateFn(
+                formatProgress(tour.config.progress.text, tour.activeStepIndex + 1, tour.stepList.length)
             );
 
             footer.appendChild(progressElement);
@@ -108,19 +100,6 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     }
 
     popup.appendChild(footer);
-}
-
-/**
- * Resolves the close icon for the popup by appending or setting the innerHTML of the closeButton.
- * @param {HTMLButtonElement} closeButton - The button element that will display the close icon.
- * @param {PopupCloseIconElement} icon - The close icon to be resolved. It can be an HTMLElement or an InnerHTML object.
- */
-function resolveCloseIcon(closeButton: HTMLButtonElement, icon: PopupCloseIconElement): void {
-    if (icon instanceof HTMLElement) {
-        closeButton.appendChild(icon);
-    } else {
-        closeButton.innerHTML = icon.innerHTML;
-    }
 }
 
 /**

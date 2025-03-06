@@ -1,6 +1,6 @@
 import type { DeepRequired } from './utility.type';
 
-export type PopupCloseIconElement = InnerHTML | HTMLElement;
+export type PopupCloseIconElement = HTMLElement;
 
 /**
  * The function to translate the tokens
@@ -26,15 +26,25 @@ export type TourConfig = {
      */
     class?: string;
     /**
-     * Indicates if the tour popup can be closed by the user
-     * @default true
+     * Add the way to allow close
      */
-    allowClose?: boolean;
-    /**
-     * Indicates if the tour popup can be closed by clicking outside the popup
-     * @default true
-     */
-    allowClickoutClose?: boolean;
+    close?: {
+        /**
+         * Indicates if the tour popup can be closed by click header button
+         * @default true
+         */
+        button?: boolean;
+        /**
+         * Indicates if the tour popup can be closed by click outside a popup
+         * @default false
+         */
+        clickout?: boolean;
+        /**
+         * Indicates if the tour popup can be closed by click escape key
+         * @default true
+         */
+        esc?: boolean;
+    };
     /**
      * Specifies if the tour should scroll to the current step and how to scroll
      * Can be a boolean to enable or disable scrolling, or an object with options for scrollIntoView
@@ -44,7 +54,7 @@ export type TourConfig = {
     /**
      * The element or HTML to use as the close icon
      */
-    closeIcon?: PopupCloseIconElement;
+    closeIcon?: HTMLElement;
     /**
      * Arrow configuration
      */
@@ -61,7 +71,7 @@ export type TourConfig = {
         class?: string;
     };
     /**
-     * Configuration for the helper layout.
+     * Configuration for the highlight
      */
     highlight?: {
         /**
@@ -80,6 +90,9 @@ export type TourConfig = {
          */
         class?: string;
     };
+    /**
+     * Configuration for the progress
+     */
     progress?: {
         /**
          * Disable tour progress display
@@ -92,6 +105,21 @@ export type TourConfig = {
          */
         text?: string;
     };
+    /**
+     * Configuration for the intersection
+     */
+    intersection: {
+        /**
+         * Disabling interaction with host element
+         * @default false
+         */
+        disable?: boolean;
+    };
+    /**
+     * Control tour from keyboard arrows
+     * @default false
+     */
+    keyboardControl?: boolean;
     /**
      * The class to apply to the tour popup animation
      * @default 'siteguide-animation'
