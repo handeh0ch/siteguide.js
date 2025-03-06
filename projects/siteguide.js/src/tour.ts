@@ -212,7 +212,7 @@ export class Tour {
         // this.dispatch('changeStep');
     }
 
-    public next(): void {
+    public async next(): Promise<void> {
         // this.dispatch('afterChangeStep');
         const stepIndex: number = isDefined(this._activeStep)
             ? this._stepList.indexOf(this._activeStep) + 1
@@ -221,6 +221,14 @@ export class Tour {
         if (stepIndex >= this._stepList.length) {
             this.complete();
             return;
+        }
+
+        if (isDefined(this._activeStep?.popupData.allowNext)) {
+            const allowNext: boolean = (await this._activeStep?.popupData.allowNext.call(this)) ?? true;
+
+            if (!allowNext) {
+                return;
+            }
         }
 
         this.changeStepTo(stepIndex, 'toNext');
