@@ -106,9 +106,9 @@ export type TourConfig = {
         text?: string;
     };
     /**
-     * Configuration for the intersection
+     * Configuration for the interaction
      */
-    intersection?: {
+    interaction?: {
         /**
          * Disabling interaction with host element
          * @default false

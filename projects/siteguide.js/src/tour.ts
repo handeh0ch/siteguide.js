@@ -107,8 +107,8 @@ export class Tour {
                 disable: config.progress?.disable ?? true,
                 text: `Step {{currentStep}} of {{totalSteps}}`,
             },
-            intersection: {
-                disable: config.intersection?.disable ?? false,
+            interaction: {
+                disable: config.interaction?.disable ?? false,
             },
             keyboardControl: config.keyboardControl ?? false,
             translateFn: config.translateFn ?? ((token: string) => token),
@@ -163,7 +163,7 @@ export class Tour {
             document.body.appendChild(this._highlight);
         }
 
-        if (this._config.intersection.disable) {
+        if (!this._config.interaction.disable) {
             this._intersection = createElement('div', ['siteguide-intersection']);
             document.body.appendChild(this._intersection);
         }

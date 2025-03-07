@@ -76,7 +76,7 @@ export class TourStep {
 
         const renderersPromises = [this._popupRenderer.render(this.tour.popup, this)];
 
-        if (this.tour.config.intersection.disable && isDefined(this.tour.intersection)) {
+        if (!this.tour.config.interaction.disable && isDefined(this.tour.intersection)) {
             renderersPromises.push(this._intersectionRenderer.render(this.tour.intersection, this));
         }
 
