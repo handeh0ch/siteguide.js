@@ -1,4 +1,3 @@
-import { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { Tour } from './tour';
 import { PopupData } from './types/popup.type';
 import { StepDirection } from './types/step-direction.type';
@@ -7,15 +6,7 @@ import { isDefined, isNullOrUndefined } from './utils/base.util';
 
 export class TourStep {
     public get isFirst(): boolean {
-        return this._index === 0;
-    }
-
-    public get nextStep(): TourStep | null {
-        return this.tour.stepList[this.tour.stepList.indexOf(this) + 1] ?? null;
-    }
-
-    public get prevStep(): TourStep | null {
-        return this.tour.stepList[this.tour.stepList.indexOf(this) - 1] ?? null;
+        return this.tour.stepList.indexOf(this) === 0;
     }
 
     public get direction(): StepDirection {
@@ -47,18 +38,12 @@ export class TourStep {
 
     private _direction: StepDirection = 'toNext';
     private readonly _hostData: PopupHost | undefined;
-    private readonly _popupRenderer: IRenderer;
-    private readonly _highlightRenderer: IRenderer;
-    private readonly _intersectionRenderer: IRenderer;
 
     public constructor(tour: Tour, config: TourStepConfig) {
         this.popupData = config.popup;
         this.tour = tour;
         this._index = config.index ?? null;
         this._hostData = config.host;
-        this._popupRenderer = tour.popupRenderer;
-        this._highlightRenderer = tour.highlightRenderer;
-        this._intersectionRenderer = tour.intersectionRenderer;
     }
 
     public async show(direction: StepDirection): Promise<void> {
@@ -74,30 +59,30 @@ export class TourStep {
             );
         }
 
-        const renderersPromises = [this._popupRenderer.render(this.tour.popup, this)];
+        const renderersPromises = [this.tour.popupRenderer.render(this.tour.popup, this)];
 
-        if (!this.tour.config.interaction.disable && isDefined(this.tour.intersection)) {
-            renderersPromises.push(this._intersectionRenderer.render(this.tour.intersection, this));
+        if (!this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
+            renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, this));
         }
 
         if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
-            renderersPromises.push(this._highlightRenderer.render(this.tour.highlight, this));
+            renderersPromises.push(this.tour.highlightRenderer.render(this.tour.highlight, this));
         }
 
         if (this.tour.config.highlight.disable && isDefined(this.tour.highlight)) {
-            this._highlightRenderer.render(this.tour.highlight, {} as TourStep);
+            this.tour.highlightRenderer.render(this.tour.highlight, {} as TourStep);
         }
 
         await Promise.all(renderersPromises);
 
-        this.toggleZIndex(true);
+        this.toggleHostClass(true);
     }
 
     public async hide(): Promise<void> {
-        this.toggleZIndex(false);
+        this.toggleHostClass(false);
     }
 
-    private toggleZIndex(enable: boolean): void {
+    private toggleHostClass(enable: boolean): void {
         if (isNullOrUndefined(this._hostElement)) {
             return;
         }

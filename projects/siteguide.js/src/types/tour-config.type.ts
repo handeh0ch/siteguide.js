@@ -26,6 +26,22 @@ export type TourConfig = {
      */
     class?: string;
     /**
+     * Tour buttons configuration
+     *
+     */
+    buttons?: {
+        /**
+         * Next button default text
+         * @default 'Next'
+         */
+        nextText?: string;
+        /**
+         * Prev button default text
+         * @default 'Back'
+         */
+        prevText?: string;
+    };
+    /**
      * Add the way to allow close
      */
     close?: {

@@ -2,7 +2,7 @@ import { TourStep } from '../tour-step';
 import { getPositionType } from '../utils/is-fixed.util';
 import type { IRenderer } from './interfaces/renderer.interface';
 
-export class IntersectionRenderer implements IRenderer {
+export class InteractionRenderer implements IRenderer {
     /** @inheritdoc */
     public render(helper: HTMLElement, step: TourStep): Promise<void> {
         return new Promise<void>((resolve) => {
