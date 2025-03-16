@@ -110,11 +110,11 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
 function getDefaultButtonList(tour: Tour): TourButtonConfig[] {
     return [
         {
-            text: 'Back',
+            text: tour.config.buttons.prevText,
             action: tour.prev,
         },
         {
-            text: 'Next',
+            text: tour.config.buttons.nextText,
             type: 'primary',
             action: tour.next,
         },

@@ -1,5 +1,6 @@
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
 import { HighlightRenderer } from './popup-renderer/highlight.renderer';
+import { InteractionRenderer } from './popup-renderer/interaction.renderer';
 import type { IRenderer } from './popup-renderer/interfaces/renderer.interface';
 import { TourStep } from './tour-step';
 import type { StepDirection } from './types/step-direction.type';
@@ -45,8 +46,8 @@ export class Tour {
         return this._highlight;
     }
 
-    public get intersection(): HTMLElement | null {
-        return this._intersection;
+    public get interaction(): HTMLElement | null {
+        return this._interaction;
     }
 
     public get activeStep(): TourStep | null {
@@ -63,11 +64,11 @@ export class Tour {
 
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
-    public readonly intersectionRenderer: IRenderer = new HighlightRenderer();
+    public readonly interactionRenderer: IRenderer = new InteractionRenderer();
 
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
-    private _intersection: HTMLElement | null = null;
+    private _interaction: HTMLElement | null = null;
 
     private _stepList: TourStep[] = [];
     private _activeStep: TourStep | null = null;
@@ -80,6 +81,10 @@ export class Tour {
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
             class: '',
+            buttons: {
+                nextText: config.buttons?.nextText ?? 'Next',
+                prevText: config.buttons?.prevText ?? 'Back',
+            },
             animationClass: config.animationClass ?? 'siteguide-animation',
             close: {
                 button: config.close?.button ?? true,
@@ -164,8 +169,8 @@ export class Tour {
         }
 
         if (!this._config.interaction.disable) {
-            this._intersection = createElement('div', ['siteguide-intersection']);
-            document.body.appendChild(this._intersection);
+            this._interaction = createElement('div', ['siteguide-intersection']);
+            document.body.appendChild(this._interaction);
         }
 
         // this.dispatch('start');

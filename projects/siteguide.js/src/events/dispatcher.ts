@@ -34,7 +34,7 @@ export class Dispatcher {
         }
     }
 
-    public dispatch(eventName: TourEventType): void {
+    protected dispatch(eventName: TourEventType): void {
         const event: DispatcherEvent | undefined = this._events.get(eventName);
 
         if (event) {
