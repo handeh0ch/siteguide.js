@@ -67,7 +67,7 @@
     background-color: inherit;
 }
 
-.siteguide-intersection {
+.siteguide-interaction {
     border-radius: 4px;
     opacity: 0;
     z-index: 1000002 !important;
@@ -80,11 +80,19 @@
         0 0 0 5000px rgba(33, 33, 33, 0.5);
     border: 2px solid var(--sg-mono-900);
     border-radius: 4px;
-    opacity: 1;
+    opacity: 0;
     z-index: 1000000;
     position: absolute;
     transition: all 0.3s ease-out;
     pointer-events: none;
+}
+
+.siteguide-background {
+    position: fixed;
+    box-sizing: content-box;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
 }
 
 .siteguide-header {
@@ -217,5 +225,4 @@
 .siteguide-host {
     z-index: 1000001 !important;
     position: relative;
-    isolation: isolate;
 }
