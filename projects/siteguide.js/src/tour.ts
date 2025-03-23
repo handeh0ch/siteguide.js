@@ -31,7 +31,7 @@ export const SiteguideBase = new SiteguideData();
 
 export class Tour {
     public get stepList(): readonly TourStep[] {
-        return this._stepList as Readonly<TourStep[]>;
+        return this._stepList;
     }
 
     public get config(): RequiredTourConfig {
@@ -69,15 +69,14 @@ export class Tour {
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
     private _interaction: HTMLElement | null = null;
+    private _background: HTMLElement | null = null;
 
     private _stepList: TourStep[] = [];
     private _activeStep: TourStep | null = null;
-    private _bodyResizeObserver: ResizeObserver;
+    private _bodyResizeObserver: ResizeObserver | null = null;
     private _config: RequiredTourConfig;
 
     public constructor(config: TourConfig) {
-        this._bodyResizeObserver = this.getBodyResizeObserver();
-
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
             class: '',
@@ -113,7 +112,7 @@ export class Tour {
                 text: `Step {{currentStep}} of {{totalSteps}}`,
             },
             interaction: {
-                disable: config.interaction?.disable ?? false,
+                disable: config.interaction?.disable ?? true,
             },
             keyboardControl: config.keyboardControl ?? false,
             translateFn: config.translateFn ?? ((token: string) => token),
@@ -148,6 +147,9 @@ export class Tour {
             return;
         }
 
+        SiteguideBase.setActiveTour(this);
+        this._bodyResizeObserver = this.getBodyResizeObserver();
+
         if (this.config.close.esc) {
             document.addEventListener('keydown', this.closeOnEsc);
         }
@@ -156,9 +158,12 @@ export class Tour {
             document.addEventListener('keydown', this.keyboardControl);
         }
 
-        SiteguideBase.setActiveTour(this);
-        this._popup = createElement('div', [this._config.classPrefix]);
-        document.body.appendChild(this._popup);
+        this._background = createElement('div', ['siteguide-background']);
+        document.body.appendChild(this._background);
+
+        if (this.config.close.clickout) {
+            this._background.addEventListener('click', this.closeOnClick);
+        }
 
         if (!this._config.highlight.disable) {
             this._highlight = createElement('div', [
@@ -168,10 +173,13 @@ export class Tour {
             document.body.appendChild(this._highlight);
         }
 
-        if (!this._config.interaction.disable) {
-            this._interaction = createElement('div', ['siteguide-intersection']);
+        if (this._config.interaction.disable) {
+            this._interaction = createElement('div', ['siteguide-interaction']);
             document.body.appendChild(this._interaction);
         }
+
+        this._popup = createElement('div', [this._config.classPrefix]);
+        document.body.appendChild(this._popup);
 
         // this.dispatch('start');
         this.next();
@@ -185,6 +193,16 @@ export class Tour {
         if (this._highlight) {
             document.body.removeChild(this._highlight);
         }
+
+        if (this._interaction) {
+            document.body.removeChild(this._interaction);
+        }
+
+        if (this._background) {
+            document.body.removeChild(this._background);
+        }
+
+        this._bodyResizeObserver?.disconnect();
 
         this._activeStep?.hide();
         this._activeStep = null;
@@ -273,6 +291,10 @@ export class Tour {
             if (isDefined(this._highlight) && !this.config.highlight.disable) {
                 this.highlightRenderer.updatePosition(this._highlight, this._activeStep);
             }
+
+            if (isDefined(this._interaction) && this.config.interaction.disable) {
+                this.interactionRenderer.updatePosition(this._interaction, this._activeStep);
+            }
         });
 
         observer.observe(document.body);
@@ -284,6 +306,10 @@ export class Tour {
         if (event.key === 'Escape') {
             this.complete();
         }
+    };
+
+    private closeOnClick = (): void => {
+        this.complete();
     };
 
     private keyboardControl = (event: KeyboardEvent): void => {

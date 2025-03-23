@@ -38,6 +38,7 @@ export class TourStep {
 
     private _direction: StepDirection = 'toNext';
     private readonly _hostData: PopupHost | undefined;
+    private _resizeObserver: ResizeObserver | null = null;
 
     public constructor(tour: Tour, config: TourStepConfig) {
         this.popupData = config.popup;
@@ -59,9 +60,11 @@ export class TourStep {
             );
         }
 
+        this._resizeObserver = this.listenHostResize();
+
         const renderersPromises = [this.tour.popupRenderer.render(this.tour.popup, this)];
 
-        if (!this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
+        if (this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
             renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, this));
         }
 
@@ -79,6 +82,7 @@ export class TourStep {
     }
 
     public async hide(): Promise<void> {
+        this._resizeObserver?.disconnect();
         this.toggleHostClass(false);
     }
 
@@ -100,5 +104,31 @@ export class TourStep {
         }
 
         return hostElement as HTMLElement;
+    }
+
+    private listenHostResize(): ResizeObserver {
+        const observer: ResizeObserver = new ResizeObserver(() => {
+            if (isNullOrUndefined(this.tour.activeStep)) {
+                return;
+            }
+
+            if (isDefined(this.tour.popup)) {
+                this.tour.popupRenderer.updatePosition(this.tour.popup, this.tour.activeStep!);
+            }
+
+            if (isDefined(this.tour.highlight) && !this.tour.config.highlight.disable) {
+                this.tour.highlightRenderer.updatePosition(this.tour.highlight, this.tour.activeStep!);
+            }
+
+            if (isDefined(this.tour.interaction) && this.tour.config.interaction.disable) {
+                this.tour.interactionRenderer.updatePosition(this.tour.interaction, this.tour.activeStep!);
+            }
+        });
+
+        if (isDefined(this._hostElement)) {
+            observer.observe(this._hostElement);
+        }
+
+        return observer;
     }
 }
