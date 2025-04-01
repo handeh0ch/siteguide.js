@@ -4,26 +4,26 @@ import type { IRenderer } from './interfaces/renderer.interface';
 
 export class InteractionRenderer implements IRenderer {
     /** @inheritdoc */
-    public render(helper: HTMLElement, step: TourStep): Promise<void> {
+    public render(element: HTMLElement, step: TourStep): Promise<void> {
         return new Promise<void>((resolve) => {
             if (step.hostElement) {
-                helper.style.position = getPositionType(step.hostElement);
+                element.style.position = getPositionType(step.hostElement);
             }
 
             resolve();
         }).then(() => {
-            this.updatePosition(helper, step);
+            this.updatePosition(element, step);
         });
     }
 
     /** @inheritdoc */
-    public updatePosition(helper: HTMLElement, step: TourStep): void {
+    public updatePosition(element: HTMLElement, step: TourStep): void {
         if (!step.hostElement) {
-            helper.style.width = '0';
-            helper.style.height = '0';
-            helper.style.top = '50%';
-            helper.style.left = '50%';
-            helper.style.transform = 'translate(-50%, -50%)';
+            element.style.width = '0';
+            element.style.height = '0';
+            element.style.top = '50%';
+            element.style.left = '50%';
+            element.style.transform = 'translate(-50%, -50%)';
             return;
         }
 
@@ -31,12 +31,12 @@ export class InteractionRenderer implements IRenderer {
         const padding: number = step.tour.config.highlight?.padding ?? 8;
 
         const scrollTop: number =
-            helper.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;
+            element.style.position === 'fixed' ? 0 : window.scrollY || document.documentElement.scrollTop;
 
-        helper.style.transform = '';
-        helper.style.left = `${rect.left - padding}px`;
-        helper.style.top = `${rect.top + scrollTop - padding}px`;
-        helper.style.width = `${rect.width + 2 * padding}px`;
-        helper.style.height = `${rect.height + 2 * padding}px`;
+        element.style.transform = '';
+        element.style.left = `${rect.left - padding}px`;
+        element.style.top = `${rect.top + scrollTop - padding}px`;
+        element.style.width = `${rect.width + 2 * padding}px`;
+        element.style.height = `${rect.height + 2 * padding}px`;
     }
 }
