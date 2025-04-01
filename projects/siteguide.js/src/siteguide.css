@@ -46,7 +46,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 9999998 !important;
+    z-index: 9998 !important;
     opacity: 0;
     transition: opacity 0.3s ease-out;
     pointer-events: auto;
@@ -59,16 +59,16 @@
     box-shadow:
         0 0 0 0 rgba(33, 33, 33, 0.8),
         0 0 0 5000px rgba(33, 33, 33, 0.5);
-    z-index: 9999999 !important;
+    z-index: 9999 !important;
     opacity: 0;
     transition: all 0.3s ease-out;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 .siteguide-interaction {
     position: fixed;
     border-radius: 4px;
-    z-index: 10000002 !important;
+    z-index: 10002 !important;
     pointer-events: auto;
 }
 
@@ -83,7 +83,7 @@
     box-shadow: 0 10px 10px rgba(0, 0, 0, 0.066);
     display: flex;
     flex-direction: column;
-    z-index: 10000003 !important;
+    z-index: 10003 !important;
     color: var(--sg-text);
     font-size: var(--sg-text-m);
 }
@@ -223,5 +223,5 @@
 
 .siteguide-host {
     position: relative;
-    z-index: 10000001 !important;
+    z-index: 10001 !important;
 }
