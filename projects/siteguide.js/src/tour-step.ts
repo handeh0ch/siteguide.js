@@ -66,6 +66,8 @@ export class TourStep {
 
         if (this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
             renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, this));
+        } else if (!this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
+            renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, {} as TourStep));
         }
 
         if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
