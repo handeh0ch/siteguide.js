@@ -68,6 +68,15 @@
     z-index: 99999999 !important;
 }
 
+.siteguide-host-parent {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    isolation: auto;
+    will-change: auto;
+    animation-play-state: paused;
+}
+
 .siteguide-interaction {
     position: fixed;
     border-radius: 4px;

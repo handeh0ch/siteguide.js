@@ -62,7 +62,14 @@ export class TourStep {
 
         this._resizeObserver = this.listenHostResize();
 
-        const renderersPromises = [this.tour.popupRenderer.render(this.tour.popup, this)];
+        const renderersPromises = [];
+
+        if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
+            renderersPromises.push(this.tour.highlightRenderer.render(this.tour.highlight, this));
+        }
+        if (this.tour.config.highlight.disable && isDefined(this.tour.highlight)) {
+            this.tour.highlightRenderer.render(this.tour.highlight, {} as TourStep);
+        }
 
         if (this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
             renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, this));
@@ -70,13 +77,7 @@ export class TourStep {
             renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, {} as TourStep));
         }
 
-        if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
-            renderersPromises.push(this.tour.highlightRenderer.render(this.tour.highlight, this));
-        }
-
-        if (this.tour.config.highlight.disable && isDefined(this.tour.highlight)) {
-            this.tour.highlightRenderer.render(this.tour.highlight, {} as TourStep);
-        }
+        renderersPromises.push(this.tour.popupRenderer.render(this.tour.popup, this));
 
         await Promise.all(renderersPromises);
 
@@ -95,8 +96,10 @@ export class TourStep {
 
         if (enable) {
             this._hostElement.classList.add('siteguide-host');
+            this._hostElement.parentElement?.classList.add('siteguide-host-parent');
         } else {
             this._hostElement.classList.remove('siteguide-host');
+            this._hostElement.parentElement?.classList.remove('siteguide-host-parent');
         }
     }
 
