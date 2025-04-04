@@ -64,6 +64,10 @@ export class TourStep {
 
         const renderersPromises = [];
 
+        if (isDefined(this.tour.background)) {
+            renderersPromises.push(this.tour.backgroundRenderer.render(this.tour.background, this));
+        }
+
         if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
             renderersPromises.push(this.tour.highlightRenderer.render(this.tour.highlight, this));
         }

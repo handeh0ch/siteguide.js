@@ -10,6 +10,7 @@ import { isDefined, isNullOrUndefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { deepMerge } from './utils/deep-merge.util';
 import { getDefaultCloseButton } from './utils/get-default-close-button.util';
+import { BackgroundRenderer } from './popup-renderer/background.renderer';
 
 class SiteguideData {
     public get isActive(): boolean {
@@ -50,6 +51,10 @@ export class Tour {
         return this._interaction;
     }
 
+    public get background(): HTMLElement | null {
+        return this._background;
+    }
+
     public get activeStep(): TourStep | null {
         return this._activeStep;
     }
@@ -65,6 +70,7 @@ export class Tour {
     public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
     public readonly highlightRenderer: IRenderer = new HighlightRenderer();
     public readonly interactionRenderer: IRenderer = new InteractionRenderer();
+    public readonly backgroundRenderer: IRenderer = new BackgroundRenderer();
 
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
@@ -114,6 +120,9 @@ export class Tour {
             interaction: {
                 disable: config.interaction?.disable ?? true,
             },
+            background: {
+                disable: config.background?.disable ?? true,
+            },
             keyboardControl: config.keyboardControl ?? false,
             translateFn: config.translateFn ?? ((token: string) => token),
         };
@@ -160,7 +169,6 @@ export class Tour {
 
         this._background = createElement('div', ['siteguide-background']);
         document.body.appendChild(this._background);
-
         if (this.config.close.clickout) {
             this._background.addEventListener('click', this.closeOnClick);
         }
@@ -168,6 +176,7 @@ export class Tour {
         if (!this._config.highlight.disable) {
             this._highlight = createElement('div', [
                 this._config.highlight.class,
+                'siteguide-highlight-pos',
                 `${this._config.classPrefix}-highlight`,
             ]);
             document.body.appendChild(this._highlight);
@@ -178,7 +187,7 @@ export class Tour {
             document.body.appendChild(this._interaction);
         }
 
-        this._popup = createElement('div', [this._config.classPrefix]);
+        this._popup = createElement('div', ['siteguide-pos', this._config.classPrefix]);
         document.body.appendChild(this._popup);
 
         // this.dispatch('start');
