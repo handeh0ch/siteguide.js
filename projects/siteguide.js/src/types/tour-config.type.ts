@@ -132,6 +132,16 @@ export type TourConfig = {
         disable?: boolean;
     };
     /**
+     * Configuration for the background
+     */
+    background?: {
+        /**
+         * Disabling background
+         * @default true
+         */
+        disable?: boolean;
+    };
+    /**
      * Control tour from keyboard arrows
      * @default false
      */
