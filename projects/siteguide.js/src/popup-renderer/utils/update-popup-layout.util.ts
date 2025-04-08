@@ -41,7 +41,7 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     header.appendChild(title);
 
     if (tour.config.close.button) {
-        tour.config.closeIcon.onclick = tour.complete.bind(tour);
+        tour.config.closeIcon.onclick = tour.close.bind(tour);
         header.appendChild(tour.config.closeIcon as HTMLElement);
     }
 
@@ -91,9 +91,8 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
                 `${popupData.customization?.progressClass ?? ''}`,
             ]);
 
-            progressElement.innerHTML = tour.config.translateFn(
-                formatProgress(tour.config.progress.text, tour.activeStepIndex + 1, tour.stepList.length)
-            );
+            const translated: string = tour.config.translateFn(tour.config.progress.text);
+            progressElement.innerHTML = formatProgress(translated, tour.activeStepIndex + 1, tour.stepList.length);
 
             footer.appendChild(progressElement);
         }
