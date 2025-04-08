@@ -11,6 +11,7 @@ import { createElement } from './utils/create-element.util';
 import { deepMerge } from './utils/deep-merge.util';
 import { getDefaultCloseButton } from './utils/get-default-close-button.util';
 import { BackgroundRenderer } from './popup-renderer/background.renderer';
+import { Dispatcher } from './events/dispatcher';
 
 class SiteguideData {
     public get isActive(): boolean {
@@ -30,7 +31,7 @@ class SiteguideData {
 
 export const SiteguideBase = new SiteguideData();
 
-export class Tour {
+export class Tour extends Dispatcher {
     public get stepList(): readonly TourStep[] {
         return this._stepList;
     }
@@ -83,6 +84,7 @@ export class Tour {
     private _config: RequiredTourConfig;
 
     public constructor(config: TourConfig) {
+        super();
         this._config = {
             classPrefix: config.classPrefix ?? 'siteguide',
             class: '',
@@ -152,7 +154,7 @@ export class Tour {
     }
 
     public start(): void {
-        if (SiteguideBase.isActive) {
+        if (SiteguideBase.isActive || this._stepList.length === 0) {
             return;
         }
 
@@ -190,11 +192,80 @@ export class Tour {
         this._popup = createElement('div', ['siteguide-pos', this._config.classPrefix]);
         document.body.appendChild(this._popup);
 
-        // this.dispatch('start');
+        this.dispatch('start');
         this.next();
     }
 
     public complete(): void {
+        this.completeTour();
+        this.dispatch('complete');
+    }
+
+    public close(): void {
+        this.completeTour();
+        this.dispatch('close');
+    }
+
+    public prev(): void {
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) - 1
+            : this._stepList.indexOf(this._stepList[this._stepList.length - 1]);
+
+        if (stepIndex < 0) {
+            this.complete();
+            return;
+        }
+
+        this.changeStepTo(stepIndex, 'fromBack');
+
+        this.dispatch('prev');
+        this.dispatch('changeStep');
+    }
+
+    public async next(): Promise<void> {
+        const stepIndex: number = isDefined(this._activeStep)
+            ? this._stepList.indexOf(this._activeStep) + 1
+            : this._stepList.indexOf(this._stepList[0]);
+
+        if (stepIndex >= this._stepList.length) {
+            this.complete();
+            return;
+        }
+
+        if (isDefined(this._activeStep?.popupData.allowNext)) {
+            const allowNext: boolean = (await this._activeStep?.popupData.allowNext.call(this)) ?? true;
+
+            if (!allowNext) {
+                return;
+            }
+        }
+
+        this.changeStepTo(stepIndex, 'toNext');
+
+        this.dispatch('next');
+        this.dispatch('changeStep');
+    }
+
+    public goTo(index: number): void {
+        if (index > this._stepList.length - 1) {
+            console.error('Provided index was larger than steps amount');
+            return;
+        }
+
+        this.changeStepTo(index, index > (this.activeStepIndex ?? -1) ? 'toNext' : 'fromBack');
+    }
+
+    public setConfig(config: TourConfig): void {
+        this._config = deepMerge(this._config, config as RequiredTourConfig);
+    }
+
+    private changeStepTo(index: number, direction: StepDirection): void {
+        this._activeStep?.hide();
+        this._activeStep = this._stepList[index];
+        this._activeStep.show(direction);
+    }
+
+    private completeTour(): void {
         if (this._popup) {
             document.body.removeChild(this._popup);
         }
@@ -216,7 +287,6 @@ export class Tour {
         this._activeStep?.hide();
         this._activeStep = null;
 
-        // this.dispatch('complete');
         SiteguideBase.setActiveTour(null);
 
         if (this.config.close.esc) {
@@ -226,65 +296,6 @@ export class Tour {
         if (this.config.keyboardControl) {
             document.removeEventListener('keydown', this.keyboardControl);
         }
-    }
-
-    public prev(): void {
-        const stepIndex: number = isDefined(this._activeStep)
-            ? this._stepList.indexOf(this._activeStep) - 1
-            : this._stepList.indexOf(this._stepList[this._stepList.length - 1]);
-
-        if (stepIndex < 0) {
-            this.complete();
-            return;
-        }
-
-        this.changeStepTo(stepIndex, 'fromBack');
-
-        // this.dispatch('prev');
-        // this.dispatch('changeStep');
-    }
-
-    public async next(): Promise<void> {
-        // this.dispatch('afterChangeStep');
-        const stepIndex: number = isDefined(this._activeStep)
-            ? this._stepList.indexOf(this._activeStep) + 1
-            : this._stepList.indexOf(this._stepList[0]);
-
-        if (stepIndex >= this._stepList.length) {
-            this.complete();
-            return;
-        }
-
-        if (isDefined(this._activeStep?.popupData.allowNext)) {
-            const allowNext: boolean = (await this._activeStep?.popupData.allowNext.call(this)) ?? true;
-
-            if (!allowNext) {
-                return;
-            }
-        }
-
-        this.changeStepTo(stepIndex, 'toNext');
-
-        // this.dispatch('next');
-    }
-
-    public goTo(index: number): void {
-        if (index > this._stepList.length - 1) {
-            console.error('Provided index was larger than steps amount');
-            return;
-        }
-
-        this.changeStepTo(index, index > (this.activeStepIndex ?? -1) ? 'toNext' : 'fromBack');
-    }
-
-    public setConfig(config: TourConfig): void {
-        this._config = deepMerge(this._config, config as RequiredTourConfig);
-    }
-
-    private changeStepTo(index: number, direction: StepDirection): void {
-        this._activeStep?.hide();
-        this._activeStep = this._stepList[index];
-        this._activeStep.show(direction);
     }
 
     private getBodyResizeObserver(): ResizeObserver {
@@ -313,12 +324,12 @@ export class Tour {
 
     private closeOnEsc = (event: KeyboardEvent): void => {
         if (event.key === 'Escape') {
-            this.complete();
+            this.close();
         }
     };
 
     private closeOnClick = (): void => {
-        this.complete();
+        this.close();
     };
 
     private keyboardControl = (event: KeyboardEvent): void => {

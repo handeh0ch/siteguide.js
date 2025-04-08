@@ -1,6 +1,6 @@
 {
     "name": "siteguide.js",
-    "version": "0.9.4",
+    "version": "0.10.0",
     "description": "Open source library made with vanilla Javascript and CSS to help you build website guides and onboarding tours.",
     "license": "MIT",
     "keywords": [
