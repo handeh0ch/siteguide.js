@@ -257,7 +257,7 @@ export class Tour extends Dispatcher {
     }
 
     public setConfig(config: TourConfig): void {
-        if (this._config.classPrefix !== config.classPrefix) {
+        if (isDefined(config.classPrefix) && this._config.classPrefix !== config.classPrefix) {
             this._config.closeIcon = (config.closeIcon ??
                 getDefaultCloseButton(config.classPrefix ?? 'siteguide')) as any;
         }
