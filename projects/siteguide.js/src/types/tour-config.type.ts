@@ -85,6 +85,11 @@ export type TourConfig = {
          * @default ''
          */
         class?: string;
+        /**
+         * Arrow padding
+         * @default '24'
+         */
+        padding?: number;
     };
     /**
      * Configuration for the highlight

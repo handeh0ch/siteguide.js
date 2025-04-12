@@ -101,7 +101,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
         }
 
         if (!step.tour.config.arrow.disable && isDefined(arrowEl)) {
-            middlewares.push(arrow({ element: arrowEl }));
+            middlewares.push(arrow({ element: arrowEl, padding: step.tour.config.arrow.padding }));
         }
 
         computePosition(step.hostElement!, popup, {

@@ -109,6 +109,7 @@ export class Tour extends Dispatcher {
             arrow: {
                 disable: config.arrow?.disable ?? false,
                 class: config.arrow?.class ?? '',
+                padding: config.arrow?.padding ?? 24,
             },
             highlight: {
                 disable: config.highlight?.disable ?? false,
@@ -256,6 +257,10 @@ export class Tour extends Dispatcher {
     }
 
     public setConfig(config: TourConfig): void {
+        if (this._config.classPrefix !== config.classPrefix) {
+            this._config.closeIcon = (config.closeIcon ??
+                getDefaultCloseButton(config.classPrefix ?? 'siteguide')) as any;
+        }
         this._config = deepMerge(this._config, config as RequiredTourConfig);
     }
 
