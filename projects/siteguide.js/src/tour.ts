@@ -1,3 +1,5 @@
+import { Dispatcher } from './events/dispatcher';
+import { BackgroundRenderer } from './popup-renderer/background.renderer';
 import { FloatingUiPopupRenderer } from './popup-renderer/floating-ui-popup.renderer';
 import { HighlightRenderer } from './popup-renderer/highlight.renderer';
 import { InteractionRenderer } from './popup-renderer/interaction.renderer';
@@ -10,8 +12,6 @@ import { isDefined, isNullOrUndefined } from './utils/base.util';
 import { createElement } from './utils/create-element.util';
 import { deepMerge } from './utils/deep-merge.util';
 import { getDefaultCloseButton } from './utils/get-default-close-button.util';
-import { BackgroundRenderer } from './popup-renderer/background.renderer';
-import { Dispatcher } from './events/dispatcher';
 
 class SiteguideData {
     public get isActive(): boolean {
@@ -68,10 +68,10 @@ export class Tour extends Dispatcher {
         return this.stepList.indexOf(this._activeStep);
     }
 
-    public readonly popupRenderer: IRenderer = new FloatingUiPopupRenderer();
-    public readonly highlightRenderer: IRenderer = new HighlightRenderer();
-    public readonly interactionRenderer: IRenderer = new InteractionRenderer();
-    public readonly backgroundRenderer: IRenderer = new BackgroundRenderer();
+    private readonly _popupRenderer: IRenderer = new FloatingUiPopupRenderer();
+    private readonly _highlightRenderer: IRenderer = new HighlightRenderer();
+    private readonly _interactionRenderer: IRenderer = new InteractionRenderer();
+    private readonly _backgroundRenderer: IRenderer = new BackgroundRenderer();
 
     private _popup: HTMLElement | null = null;
     private _highlight: HTMLElement | null = null;
@@ -92,7 +92,10 @@ export class Tour extends Dispatcher {
                 nextText: config.buttons?.nextText ?? 'Next',
                 prevText: config.buttons?.prevText ?? 'Back',
             },
-            animationClass: config.animationClass ?? 'siteguide-animation',
+            animation: {
+                class: config.animation?.class ?? 'siteguide-animation',
+                delay: config.animation?.delay ?? 400,
+            },
             close: {
                 button: config.close?.button ?? true,
                 clickout: config.close?.clickout ?? false,
@@ -140,7 +143,14 @@ export class Tour extends Dispatcher {
             config.index = maxIndex + 1;
         }
 
-        const step: TourStep = new TourStep(this, config);
+        const step: TourStep = new TourStep(
+            this,
+            config,
+            this._popupRenderer,
+            this._highlightRenderer,
+            this._interactionRenderer,
+            this._backgroundRenderer
+        );
 
         this._stepList.push(step);
         this._stepList.sort((a, b) => a.index! - b.index!);
@@ -310,15 +320,15 @@ export class Tour extends Dispatcher {
             }
 
             if (isDefined(this._popup)) {
-                this.popupRenderer.updatePosition(this._popup, this._activeStep);
+                this._popupRenderer.updatePosition(this._popup, this._activeStep);
             }
 
             if (isDefined(this._highlight) && !this.config.highlight.disable) {
-                this.highlightRenderer.updatePosition(this._highlight, this._activeStep);
+                this._highlightRenderer.updatePosition(this._highlight, this._activeStep);
             }
 
             if (isDefined(this._interaction) && this.config.interaction.disable) {
-                this.interactionRenderer.updatePosition(this._interaction, this._activeStep);
+                this._interactionRenderer.updatePosition(this._interaction, this._activeStep);
             }
         });
 

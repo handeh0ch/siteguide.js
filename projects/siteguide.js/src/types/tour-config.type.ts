@@ -152,10 +152,19 @@ export type TourConfig = {
      */
     keyboardControl?: boolean;
     /**
-     * The class to apply to the tour popup animation
-     * @default 'siteguide-animation'
+     * Configuration for the animation
      */
-    animationClass?: string;
+    animation?: {
+        /**
+         * The class to apply to the tour popup animation
+         * @default 'siteguide-animation'
+         */
+        class?: string;
+        /**
+         * Delay ms
+         */
+        delay?: number;
+    };
     /**
      * The function to translate the tokens
      */

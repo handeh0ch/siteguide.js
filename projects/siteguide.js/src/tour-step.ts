@@ -1,3 +1,4 @@
+import { IRenderer } from 'popup-renderer/interfaces/renderer.interface';
 import { Tour } from './tour';
 import { PopupData } from './types/popup.type';
 import { StepDirection } from './types/step-direction.type';
@@ -40,11 +41,27 @@ export class TourStep {
     private readonly _hostData: PopupHost | undefined;
     private _resizeObserver: ResizeObserver | null = null;
 
-    public constructor(tour: Tour, config: TourStepConfig) {
+    private readonly _popupRenderer: IRenderer;
+    private readonly _highlightRenderer: IRenderer;
+    private readonly _interactionRenderer: IRenderer;
+    private readonly _backgroundRenderer: IRenderer;
+
+    public constructor(
+        tour: Tour,
+        config: TourStepConfig,
+        popupRenderer: IRenderer,
+        highlightRenderer: IRenderer,
+        interactionRenderer: IRenderer,
+        backgroundRenderer: IRenderer
+    ) {
         this.popupData = config.popup;
         this.tour = tour;
         this._index = config.index ?? null;
         this._hostData = config.host;
+        this._popupRenderer = popupRenderer;
+        this._highlightRenderer = highlightRenderer;
+        this._interactionRenderer = interactionRenderer;
+        this._backgroundRenderer = backgroundRenderer;
     }
 
     public async show(direction: StepDirection): Promise<void> {
@@ -65,23 +82,23 @@ export class TourStep {
         const renderersPromises = [];
 
         if (isDefined(this.tour.background)) {
-            renderersPromises.push(this.tour.backgroundRenderer.render(this.tour.background, this));
+            renderersPromises.push(this._backgroundRenderer.render(this.tour.background, this));
         }
 
         if (!this.tour.config.highlight.disable && !isNullOrUndefined(this.tour.highlight)) {
-            renderersPromises.push(this.tour.highlightRenderer.render(this.tour.highlight, this));
+            renderersPromises.push(this._highlightRenderer.render(this.tour.highlight, this));
         }
         if (this.tour.config.highlight.disable && isDefined(this.tour.highlight)) {
-            this.tour.highlightRenderer.render(this.tour.highlight, {} as TourStep);
+            this._highlightRenderer.render(this.tour.highlight, {} as TourStep);
         }
 
         if (this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
-            renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, this));
+            renderersPromises.push(this._interactionRenderer.render(this.tour.interaction, this));
         } else if (!this.tour.config.interaction.disable && isDefined(this.tour.interaction)) {
-            renderersPromises.push(this.tour.interactionRenderer.render(this.tour.interaction, {} as TourStep));
+            renderersPromises.push(this._interactionRenderer.render(this.tour.interaction, {} as TourStep));
         }
 
-        renderersPromises.push(this.tour.popupRenderer.render(this.tour.popup, this));
+        renderersPromises.push(this._popupRenderer.render(this.tour.popup, this));
 
         await Promise.all(renderersPromises);
 
@@ -117,20 +134,27 @@ export class TourStep {
 
     private listenHostResize(): ResizeObserver {
         const observer: ResizeObserver = new ResizeObserver(() => {
-            if (isNullOrUndefined(this.tour.activeStep)) {
+            if (isNullOrUndefined(this.tour.activeStep) || isNullOrUndefined(this.hostElement)) {
                 return;
             }
 
+            const rect: DOMRect = this.hostElement.getBoundingClientRect();
+
+            let step: TourStep = this;
+            if (rect.width === 0 && rect.height === 0) {
+                step = {} as TourStep;
+            }
+
             if (isDefined(this.tour.popup)) {
-                this.tour.popupRenderer.updatePosition(this.tour.popup, this.tour.activeStep!);
+                this._popupRenderer.updatePosition(this.tour.popup, step);
             }
 
             if (isDefined(this.tour.highlight) && !this.tour.config.highlight.disable) {
-                this.tour.highlightRenderer.updatePosition(this.tour.highlight, this.tour.activeStep!);
+                this._highlightRenderer.updatePosition(this.tour.highlight, step);
             }
 
             if (isDefined(this.tour.interaction) && this.tour.config.interaction.disable) {
-                this.tour.interactionRenderer.updatePosition(this.tour.interaction, this.tour.activeStep!);
+                this._interactionRenderer.updatePosition(this.tour.interaction, step);
             }
         });
 
