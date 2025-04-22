@@ -13,7 +13,7 @@ import { createElement } from '../../utils/create-element.util';
  */
 export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: Tour): void {
     popup.innerHTML = '';
-    popup.className = `${tour.config.class ?? ''} siteguide-pos ${tour.config.classPrefix} ${tour.config.animationClass}`;
+    popup.className = `${tour.config.class ?? ''} siteguide-pos ${tour.config.classPrefix} ${tour.config.animation.class}`;
 
     if (!tour.config.arrow.disable && tour.activeStep?.hasHost) {
         const arrow: HTMLDivElement = createElement('div', [

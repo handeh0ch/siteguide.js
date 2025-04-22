@@ -41,7 +41,7 @@ export class FloatingUiPopupRenderer implements IRenderer {
             }
 
             popup.style.display = 'none';
-            popup.classList.remove(step.tour.config.animationClass);
+            popup.classList.remove(step.tour.config.animation.class);
             if (step.hostElement) {
                 popup.style.position = getPositionType(step.hostElement);
             } else {
@@ -60,12 +60,12 @@ export class FloatingUiPopupRenderer implements IRenderer {
                     return delay(0);
                 }
 
-                return delay(400);
+                return delay(step.tour.config.animation.delay);
             })
             .then(() => {
                 popup.style.display = 'flex';
                 this.updatePosition(popup, step);
-                popup.classList.add(step.tour.config.animationClass);
+                popup.classList.add(step.tour.config.animation.class);
             });
     }
 

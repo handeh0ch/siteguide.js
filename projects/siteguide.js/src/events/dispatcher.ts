@@ -6,21 +6,21 @@ import { TourEventType } from './types/tour-event.type';
 export class Dispatcher {
     private readonly _events: Map<TourEventType, DispatcherEvent> = new Map();
 
-    public on(eventName: TourEventType, callback: TourEventCallback): void {
-        let event: DispatcherEvent | undefined = this._events.get(eventName);
+    public on(type: TourEventType, callback: TourEventCallback): void {
+        let event: DispatcherEvent | undefined = this._events.get(type);
         if (!event) {
-            event = new DispatcherEvent(eventName);
-            this._events.set(eventName, event);
+            event = new DispatcherEvent(type);
+            this._events.set(type, event);
         }
 
         event.registerCallback(callback);
     }
 
-    public off(eventName: TourEventType, callback?: TourEventCallback): void {
-        const event: DispatcherEvent | undefined = this._events.get(eventName);
+    public off(type: TourEventType, callback?: TourEventCallback): void {
+        const event: DispatcherEvent | undefined = this._events.get(type);
 
         if (isDefined(event) && isNullOrUndefined(callback)) {
-            this._events.delete(eventName);
+            this._events.delete(type);
 
             return;
         }
@@ -29,16 +29,16 @@ export class Dispatcher {
             event.unregisterCallback(callback);
 
             if (event.callbacks.length === 0) {
-                this._events.delete(eventName);
+                this._events.delete(type);
             }
         }
     }
 
-    protected dispatch(eventName: TourEventType): void {
-        const event: DispatcherEvent | undefined = this._events.get(eventName);
+    protected dispatch(type: TourEventType): void {
+        const event: DispatcherEvent | undefined = this._events.get(type);
 
         if (event) {
-            event.fire();
+            event.fire(this);
         }
     }
 }
