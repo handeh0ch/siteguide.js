@@ -1,1 +1,1 @@
-export type TourEventType = 'start' | 'complete' | 'next' | 'prev' | 'changeStep';
+export type TourEventType = 'start' | 'complete' | 'close' | 'next' | 'prev' | 'changeStep';

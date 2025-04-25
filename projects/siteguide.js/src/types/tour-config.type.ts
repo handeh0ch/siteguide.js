@@ -1,6 +1,6 @@
 import type { DeepRequired } from './utility.type';
 
-export type PopupCloseIconElement = InnerHTML | HTMLElement;
+export type PopupCloseIconElement = HTMLElement;
 
 /**
  * The function to translate the tokens
@@ -21,15 +21,46 @@ export type TourConfig = {
      */
     classPrefix?: string;
     /**
-     * Indicates if the tour popup can be closed by the user
-     * @default true
+     * Additional class to provide for popup
+     * @default ''
      */
-    allowClose?: boolean;
+    class?: string;
     /**
-     * Indicates if the tour popup can be closed by clicking outside the popup
-     * @default true
+     * Tour buttons configuration
+     *
      */
-    allowClickoutClose?: boolean;
+    buttons?: {
+        /**
+         * Next button default text
+         * @default 'Next'
+         */
+        nextText?: string;
+        /**
+         * Prev button default text
+         * @default 'Back'
+         */
+        prevText?: string;
+    };
+    /**
+     * Add the way to allow close
+     */
+    close?: {
+        /**
+         * Indicates if the tour popup can be closed by click header button
+         * @default true
+         */
+        button?: boolean;
+        /**
+         * Indicates if the tour popup can be closed by click outside a popup
+         * @default false
+         */
+        clickout?: boolean;
+        /**
+         * Indicates if the tour popup can be closed by click escape key
+         * @default true
+         */
+        esc?: boolean;
+    };
     /**
      * Specifies if the tour should scroll to the current step and how to scroll
      * Can be a boolean to enable or disable scrolling, or an object with options for scrollIntoView
@@ -39,14 +70,29 @@ export type TourConfig = {
     /**
      * The element or HTML to use as the close icon
      */
-    closeIcon?: PopupCloseIconElement;
+    closeIcon?: HTMLElement;
     /**
-     * Indicates if the arrow should be shown
-     * @default false
+     * Arrow configuration
      */
-    disableArrow?: boolean;
+    arrow?: {
+        /**
+         * Indicates if the arrow should be shown
+         * @default false
+         */
+        disable?: boolean;
+        /**
+         * Additional class to apply to the arrow
+         * @default ''
+         */
+        class?: string;
+        /**
+         * Arrow padding
+         * @default '24'
+         */
+        padding?: number;
+    };
     /**
-     * Configuration for the helper layout.
+     * Configuration for the highlight
      */
     highlight?: {
         /**
@@ -60,17 +106,65 @@ export type TourConfig = {
          */
         padding?: number;
         /**
-         * The class to apply to the highlight
-         * @default 'siteguide-highlight'
+         * Additional class to apply to the highlight
+         * @default ''
          */
         class?: string;
     };
-
     /**
-     * The class to apply to the tour popup animation
-     * @default 'siteguide-animation'
+     * Configuration for the progress
      */
-    animationClass?: string;
+    progress?: {
+        /**
+         * Disable tour progress display
+         * @default true
+         */
+        disable?: boolean;
+        /**
+         * Progress text to show
+         * @default 'Step {{currentStep}} of {{totalSteps}}'
+         */
+        text?: string;
+    };
+    /**
+     * Configuration for the interaction
+     */
+    interaction?: {
+        /**
+         * Disabling interaction with host element
+         * @default false
+         */
+        disable?: boolean;
+    };
+    /**
+     * Configuration for the background
+     */
+    background?: {
+        /**
+         * Disabling background
+         * @default true
+         */
+        disable?: boolean;
+    };
+    /**
+     * Control tour from keyboard arrows
+     * @default false
+     */
+    keyboardControl?: boolean;
+    /**
+     * Configuration for the animation
+     */
+    animation?: {
+        /**
+         * The class to apply to the tour popup animation
+         * @default 'siteguide-animation'
+         */
+        class?: string;
+        /**
+         * Delay ms
+         */
+        delay?: number;
+    };
     /**
      * The function to translate the tokens
      */

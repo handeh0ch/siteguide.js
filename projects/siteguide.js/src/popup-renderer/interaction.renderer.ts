@@ -2,7 +2,7 @@ import { TourStep } from '../tour-step';
 import { getPositionType } from '../utils/is-fixed.util';
 import type { IRenderer } from './interfaces/renderer.interface';
 
-export class HighlightRenderer implements IRenderer {
+export class InteractionRenderer implements IRenderer {
     /** @inheritdoc */
     public render(element: HTMLElement, step: TourStep): Promise<void> {
         return new Promise<void>((resolve) => {
@@ -24,7 +24,6 @@ export class HighlightRenderer implements IRenderer {
             element.style.top = '50%';
             element.style.left = '50%';
             element.style.transform = 'translate(-50%, -50%)';
-            element.style.opacity = '0';
             return;
         }
 
@@ -39,6 +38,5 @@ export class HighlightRenderer implements IRenderer {
         element.style.top = `${rect.top + scrollTop - padding}px`;
         element.style.width = `${rect.width + 2 * padding}px`;
         element.style.height = `${rect.height + 2 * padding}px`;
-        element.style.opacity = '1';
     }
 }

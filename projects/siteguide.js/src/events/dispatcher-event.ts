@@ -25,11 +25,11 @@ export class DispatcherEvent {
         }
     }
 
-    public fire(): void {
+    public fire(context: any): void {
         const callbacks: TourEventCallback[] = this._callbacks.slice(0);
 
         callbacks.forEach((callback: TourEventCallback) => {
-            callback();
+            callback(context);
         });
     }
 }

@@ -1,8 +1,7 @@
-import type { ITour } from 'interfaces/tour.interface';
+import { Tour } from '../../tour';
 import type { TourButtonConfig } from '../../types/button-config.type';
 import type { PopupData } from '../../types/popup.type';
-import type { PopupCloseIconElement } from '../../types/tour-config.type';
-import { isNullOrUndefined } from '../../utils/base.util';
+import { isDefined, isNullOrUndefined } from '../../utils/base.util';
 import { createElement } from '../../utils/create-element.util';
 
 /**
@@ -12,12 +11,15 @@ import { createElement } from '../../utils/create-element.util';
  * @param {PopupData} popupData - The data containing configuration for the popup, including button configurations.
  * @param {Tour} tour - The tour instance.
  */
-export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: ITour): void {
+export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour: Tour): void {
     popup.innerHTML = '';
-    popup.className = `${tour.config.classPrefix} ${tour.config.animationClass}`;
+    popup.className = `${tour.config.class ?? ''} siteguide-pos ${tour.config.classPrefix} ${tour.config.animation.class}`;
 
-    if (!tour.config.disableArrow) {
-        const arrow: HTMLDivElement = createElement('div', [`${tour.config.classPrefix}-arrow`]);
+    if (!tour.config.arrow.disable && tour.activeStep?.hasHost) {
+        const arrow: HTMLDivElement = createElement('div', [
+            tour.config.arrow.class ?? '',
+            `${tour.config.classPrefix}-arrow`,
+        ]);
         popup.appendChild(arrow);
     }
 
@@ -38,14 +40,9 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     title.innerHTML = tour.config.translateFn(popupData.title ?? '');
     header.appendChild(title);
 
-    if (tour.config.allowClose) {
-        const closeButton: HTMLButtonElement = createElement('button', [
-            `${tour.config.classPrefix}-close`,
-            `${popupData.customization?.closeButtonClass ?? ''}`,
-        ]);
-        resolveCloseIcon(closeButton, tour.config.closeIcon);
-        closeButton.onclick = tour.complete.bind(tour);
-        header.appendChild(closeButton);
+    if (tour.config.close.button) {
+        tour.config.closeIcon.onclick = tour.close.bind(tour);
+        header.appendChild(tour.config.closeIcon as HTMLElement);
     }
 
     const content: HTMLDivElement = createElement('div', [
@@ -54,7 +51,7 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
     ]);
     popup.appendChild(content);
 
-    const buttonList: HTMLDivElement = createElement('div', [
+    const footer: HTMLDivElement = createElement('div', [
         `${tour.config.classPrefix}-footer`,
         `${popupData.customization?.footerClass ?? ''}`,
     ]);
@@ -78,29 +75,30 @@ export function updatePopupLayout(popup: HTMLElement, popupData: PopupData, tour
         }
 
         const buttonElement: HTMLButtonElement = createElement('button', buttonClassList);
-        buttonElement.innerText = tour.config.translateFn(button.text);
+        buttonElement.innerHTML = tour.config.translateFn(button.text);
 
         buttonElement.onclick = (e: MouseEvent): void => {
             button.action.call(tour);
         };
 
-        buttonList.appendChild(buttonElement);
+        footer.appendChild(buttonElement);
     });
 
-    popup.appendChild(buttonList);
-}
+    if (!tour.config.progress.disable && tour.config.progress.text) {
+        if (isDefined(tour.activeStepIndex)) {
+            const progressElement: HTMLParagraphElement = createElement('p', [
+                `${tour.config.classPrefix}-progress`,
+                `${popupData.customization?.progressClass ?? ''}`,
+            ]);
 
-/**
- * Resolves the close icon for the popup by appending or setting the innerHTML of the closeButton.
- * @param {HTMLButtonElement} closeButton - The button element that will display the close icon.
- * @param {PopupCloseIconElement} icon - The close icon to be resolved. It can be an HTMLElement or an InnerHTML object.
- */
-function resolveCloseIcon(closeButton: HTMLButtonElement, icon: PopupCloseIconElement): void {
-    if (icon instanceof HTMLElement) {
-        closeButton.appendChild(icon);
-    } else {
-        closeButton.innerHTML = icon.innerHTML;
+            const translated: string = tour.config.translateFn(tour.config.progress.text);
+            progressElement.innerHTML = formatProgress(translated, tour.activeStepIndex + 1, tour.stepList.length);
+
+            footer.appendChild(progressElement);
+        }
     }
+
+    popup.appendChild(footer);
 }
 
 /**
@@ -108,16 +106,29 @@ function resolveCloseIcon(closeButton: HTMLButtonElement, icon: PopupCloseIconEl
  * @param {Tour} tour - The tour instance.
  * @returns {TourButtonConfig[]} The default button configurations.
  */
-function getDefaultButtonList(tour: ITour): TourButtonConfig[] {
+function getDefaultButtonList(tour: Tour): TourButtonConfig[] {
     return [
         {
-            text: 'Back',
+            text: tour.config.buttons.prevText,
             action: tour.prev,
         },
         {
-            text: 'Next',
+            text: tour.config.buttons.nextText,
             type: 'primary',
             action: tour.next,
         },
     ];
+}
+
+/**
+ * Process prgress temaplte string and insert numeric data on places
+ * @param template - string where to insert indexes
+ * @param currentStepIndex - currentStepIndex
+ * @param totalStepsAmount - total steps amount
+ * @returns modified string with pasted data
+ */
+function formatProgress(template: string, currentStepIndex: number, totalStepsAmount: number): string {
+    return template
+        .replace('{{currentStep}}', currentStepIndex.toString())
+        .replace('{{totalSteps}}', totalStepsAmount.toString());
 }
