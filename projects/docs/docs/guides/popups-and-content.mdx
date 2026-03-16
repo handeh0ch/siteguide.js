@@ -1,0 +1,95 @@
+---
+title: Popups and Content
+description: Choose between standard text popups and custom DOM content.
+---
+
+# Popups and Content
+
+Every step needs a `popup` object. Use a text popup for standard guidance and a custom popup when you want full control over the content.
+
+## Text popup
+
+Use a text popup when you want a title, description, optional image, and standard tour controls.
+
+```js
+{
+    popup: {
+        type: 'text',
+        title: 'Welcome',
+        text: 'Explain what the user is looking at.',
+        imgSrc: '/img/onboarding.png',
+        position: 'bottom',
+    }
+}
+```
+
+The most useful `TextPopupData` fields are:
+
+- `title`
+- `text`
+- `imgSrc`
+- `position`
+- `customization`
+- `buttonList`
+- `allowHtml`
+- `allowNext`
+
+## Custom popup
+
+Use a custom popup when the content should come from your own DOM node:
+
+```js
+const panel = document.createElement('div');
+panel.className = 'promo-panel';
+panel.innerHTML = '<strong>Invite teammates</strong><p>Use your own markup here.</p>';
+
+tour.addStep({
+    host: '.invite-button',
+    popup: {
+        type: 'custom',
+        title: 'Team setup',
+        node: panel,
+    },
+});
+```
+
+## Positioning
+
+`PopupPosition` supports:
+
+- `auto`
+- `top`, `bottom`, `left`, `right`
+- `top-start`, `top-end`
+- `bottom-start`, `bottom-end`
+- `left-start`, `left-end`
+- `right-start`, `right-end`
+
+When `position` is omitted or set to `auto`, Siteguide.js chooses a placement automatically.
+
+## Rendering HTML
+
+`allowHtml` applies to the title and text fields. Enable HTML only when the content comes from your application, not from user input.
+
+```js
+popup: {
+    type: 'text',
+    title: '<em>Trusted</em> title',
+    text: '<strong>Trusted</strong> HTML body',
+    allowHtml: true,
+}
+```
+
+## Per-step styling
+
+Use `PopupCustomization` when one step needs its own styling:
+
+- `class`
+- `headerClass`
+- `titleClass`
+- `contentClass`
+- `descriptionClass`
+- `footerClass`
+- `progressClass`
+- `imageClass`
+
+These classes are added alongside the default ones, so they work well for targeted overrides.

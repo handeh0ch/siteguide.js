@@ -1,23 +1,354 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+.page {
+    display: grid;
+    gap: 5rem;
+    padding: 2rem 0 5rem;
+}
 
-.heroBanner {
-    padding: 4rem 0;
-    text-align: center;
+.hero {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: 2rem;
+    align-items: center;
+}
+
+.heroCopy {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.eyebrow {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--sg-primary);
+}
+
+.heroCopy h1 {
+    margin: 0;
+    font-size: clamp(3rem, 7vw, 5rem);
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+    max-width: 11ch;
+}
+
+.lead {
+    margin: 0;
+    max-width: 40rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--ifm-color-content-secondary);
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.875rem;
+    align-items: center;
+}
+
+.secondaryAction {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 1.2rem;
+    border: 1px solid var(--sg-mono-400);
+    border-radius: 999px;
+    color: var(--ifm-heading-color);
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.72);
+}
+
+.secondaryAction:hover {
+    text-decoration: none;
+    border-color: var(--sg-primary);
+}
+
+.installBox {
+    display: inline-flex;
+    gap: 0.75rem;
+    align-items: center;
+    width: fit-content;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--sg-mono-400);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--ifm-color-content-secondary);
+    box-shadow: 0 18px 30px rgba(16, 24, 40, 0.06);
+}
+
+.installBox span {
+    font-weight: 700;
+    color: var(--ifm-heading-color);
+}
+
+.installBox code {
+    background: transparent;
+    padding: 0;
+}
+
+.heroPreview {
     position: relative;
+}
+
+.previewCanvas {
+    position: relative;
+    min-height: 29rem;
+    padding: 2rem;
+    border: 1px solid rgba(16, 24, 40, 0.08);
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 249, 255, 0.9)), var(--sg-mono-100);
+    box-shadow: 0 30px 80px rgba(16, 24, 40, 0.12);
     overflow: hidden;
 }
 
+.previewCanvas::before {
+    content: '';
+    position: absolute;
+    inset: auto -4rem -5rem auto;
+    width: 14rem;
+    height: 14rem;
+    border-radius: 999px;
+    background: rgba(44, 162, 253, 0.16);
+    filter: blur(10px);
+}
+
+.previewTarget {
+    position: absolute;
+    left: 2.4rem;
+    top: 8rem;
+    width: 8rem;
+    height: 3.25rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2e62d9, #2ca2fd);
+    box-shadow:
+        0 0 0 10px rgba(44, 162, 253, 0.12),
+        0 0 0 999px rgba(16, 24, 40, 0.14);
+}
+
+.previewPopup {
+    position: absolute;
+    top: 4.5rem;
+    right: 2rem;
+    width: min(100%, 20rem);
+    display: grid;
+    gap: 1rem;
+    padding: 1rem 1rem 0.9rem;
+    border-radius: 18px;
+    border: 1px solid var(--sg-mono-500);
+    background: var(--sg-mono-100);
+    color: var(--sg-mono-900);
+    box-shadow: 0 24px 50px rgba(16, 24, 40, 0.12);
+}
+
+.previewHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+}
+
+.previewHeader strong {
+    font-size: 1.1rem;
+}
+
+.previewHeader button {
+    border: 0;
+    background: transparent;
+    color: var(--sg-mono-700);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.previewBody {
+    color: var(--sg-mono-800);
+    line-height: 1.65;
+}
+
+.previewFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--sg-mono-400);
+    font-size: 0.92rem;
+    color: var(--sg-mono-800);
+}
+
+.previewFooter div {
+    display: flex;
+    gap: 0.65rem;
+}
+
+.linkButton,
+.primaryButton {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    cursor: pointer;
+}
+
+.linkButton {
+    background: transparent;
+    color: var(--sg-primary);
+}
+
+.primaryButton {
+    background: var(--sg-primary);
+    color: #fff;
+}
+
+.previewArrow {
+    position: absolute;
+    left: -0.35rem;
+    top: 4.5rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    background: var(--sg-mono-100);
+    border-left: 1px solid var(--sg-mono-500);
+    border-bottom: 1px solid var(--sg-mono-500);
+    transform: rotate(45deg);
+}
+
+.featureSection,
+.docsSection {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 0 auto;
+}
+
+.featureSection {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.featureCard,
+.docsCard {
+    display: grid;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    border: 1px solid var(--sg-mono-400);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 20px 40px rgba(16, 24, 40, 0.06);
+}
+
+.featureCard h2,
+.docsCard strong {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.featureCard p,
+.docsCard p,
+.sectionIntro p {
+    margin: 0;
+    color: var(--ifm-color-content-secondary);
+    line-height: 1.7;
+}
+
+.sectionIntro {
+    display: grid;
+    gap: 0.75rem;
+    max-width: 42rem;
+    margin-bottom: 1.5rem;
+}
+
+.sectionIntro h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.04em;
+}
+
+.docsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.docsCard {
+    text-decoration: none;
+    color: inherit;
+}
+
+.docsCard:hover {
+    text-decoration: none;
+    border-color: rgba(46, 98, 217, 0.32);
+    transform: translateY(-2px);
+}
+
+[data-theme='dark'] .secondaryAction,
+[data-theme='dark'] .installBox,
+[data-theme='dark'] .featureCard,
+[data-theme='dark'] .docsCard {
+    background: rgba(20, 32, 58, 0.78);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+}
+
+[data-theme='dark'] .previewCanvas {
+    background: linear-gradient(180deg, rgba(22, 33, 58, 0.95), rgba(13, 21, 38, 0.98)), #14203a;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+}
+
+[data-theme='dark'] .previewPopup {
+    background: #f7fbff;
+    color: #101828;
+}
+
 @media screen and (max-width: 996px) {
-    .heroBanner {
-        padding: 2rem;
+    .page {
+        gap: 4rem;
+        padding-top: 1rem;
+    }
+
+    .hero,
+    .featureSection,
+    .docsSection {
+        width: min(100%, calc(100% - 1.25rem));
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    .heroCopy h1 {
+        max-width: 100%;
+    }
+
+    .featureSection,
+    .docsGrid {
+        grid-template-columns: 1fr;
     }
 }
 
-.buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@media screen and (max-width: 640px) {
+    .previewCanvas {
+        min-height: 26rem;
+        padding: 1.25rem;
+    }
+
+    .previewTarget {
+        width: 6rem;
+        height: 2.75rem;
+        left: 1.2rem;
+    }
+
+    .previewPopup {
+        right: 1rem;
+        left: 4rem;
+        width: auto;
+    }
+
+    .previewFooter {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }

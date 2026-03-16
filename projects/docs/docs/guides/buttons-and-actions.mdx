@@ -1,0 +1,104 @@
+---
+title: Buttons and Actions
+description: Customize button labels, add step actions, and control when users can continue.
+---
+
+# Buttons and Actions
+
+Use these options when the default next and back flow is not enough for your product.
+
+## Default navigation labels
+
+`TourConfig.buttons` lets you rename the built-in labels:
+
+```js
+const tour = new Tour({
+    buttons: {
+        nextText: 'Continue',
+        prevText: 'Previous',
+    },
+});
+```
+
+These labels are used by the standard text popup layout.
+
+## Custom button list
+
+Use `buttonList` when one step needs custom actions:
+
+```js
+popup: {
+    type: 'text',
+    title: 'Try it now',
+    text: 'Launch an action before moving to the next step.',
+    buttonList: [
+        {
+            text: 'Open settings',
+            type: 'secondary',
+            class: 'settings-button',
+            action: async () => {
+                await openSettingsPanel();
+            },
+        },
+        {
+            text: 'Skip',
+            type: 'link',
+            action: () => tour.close(),
+        },
+    ],
+}
+```
+
+`TourButtonType` supports three visual styles:
+
+- `primary`
+- `secondary`
+- `link`
+
+## Access the tour inside `action`
+
+Button actions run with the current tour as their `this` value. This is useful when the button should control the tour directly.
+
+Use a regular function when you want access to `this`:
+
+```js
+popup: {
+    type: 'text',
+    title: 'Need manual control?',
+    text: 'Call tour methods directly from the button action.',
+    buttonList: [
+        {
+            text: 'Skip to step 3',
+            type: 'primary',
+            action: function () {
+                void this.goTo(2);
+            },
+        },
+    ],
+}
+```
+
+If you want to use `this`, avoid arrow functions here. Arrow functions keep the outer lexical `this`, so they will not receive the tour instance as the button context.
+
+## Control when users can continue
+
+Use `allowNext` when the next step should stay locked until something has happened:
+
+```js
+popup: {
+    type: 'text',
+    title: 'Connect your account',
+    text: 'The tour stays on this step until the account is connected.',
+    allowNext: async () => {
+        return await isAccountConnected();
+    },
+}
+```
+
+If the callback resolves to `false`, the tour remains on the current step.
+
+## Recommended usage
+
+- Use built-in labels for normal tours.
+- Use `buttonList` for step-specific actions.
+- Use `allowNext` when a step depends on real product state.

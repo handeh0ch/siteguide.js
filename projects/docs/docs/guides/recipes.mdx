@@ -1,0 +1,92 @@
+---
+title: Recipes
+description: Practical patterns you can adapt for common onboarding flows.
+---
+
+# Recipes
+
+Use these small patterns as starting points for common product-tour scenarios.
+
+## Centered welcome modal
+
+Omit `host` when you want a centered popup before the anchored steps begin.
+
+```js
+tour.addStep({
+    popup: {
+        type: 'text',
+        title: 'Welcome aboard',
+        text: 'Start with a broad introduction before highlighting specific UI.',
+    },
+});
+```
+
+## Lazy target lookup
+
+Resolve the target right before a step opens:
+
+```js
+tour.addStep({
+    host: () => document.querySelector('[data-tour-target="latest"]'),
+    popup: {
+        type: 'text',
+        title: 'Fresh target',
+        text: 'Useful for UI that appears late or changes after navigation.',
+    },
+});
+```
+
+## Fully custom content node
+
+```js
+const content = document.createElement('div');
+content.innerHTML = `
+    <h4>Invite your team</h4>
+    <p>Bring collaborators into the workspace before continuing.</p>
+`;
+
+tour.addStep({
+    host: '.invite-button',
+    popup: {
+        type: 'custom',
+        title: 'Collaboration',
+        node: content,
+    },
+});
+```
+
+## Brand a single step
+
+```js
+tour.addStep({
+    host: '.upgrade-banner',
+    popup: {
+        type: 'text',
+        title: 'Premium preview',
+        text: 'Match one step to the feature being explained.',
+        customization: {
+            class: 'premium-popup',
+            titleClass: 'premium-popup__title',
+        },
+    },
+});
+```
+
+## Localized content tokens
+
+```js
+const dictionary = {
+    'tour.start.title': 'Let us walk you through the page',
+};
+
+const tour = new Tour({
+    translateFn: (token) => dictionary[token] ?? token,
+});
+
+tour.addStep({
+    popup: {
+        type: 'text',
+        title: 'tour.start.title',
+    },
+});
+```

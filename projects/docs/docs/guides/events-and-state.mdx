@@ -1,0 +1,60 @@
+---
+title: Events and State
+description: React to tour changes and inspect the current step.
+---
+
+# Events and State
+
+Use tour events when you want to react to navigation, completion, or step changes.
+
+## Event names
+
+`TourEventType` is the union:
+
+```ts
+'start' | 'complete' | 'close' | 'next' | 'prev' | 'changeStep'
+```
+
+## Subscribing to events
+
+```js
+const handleChange = (tourInstance) => {
+    console.log(tourInstance.activeStepIndex);
+};
+
+tour.on('changeStep', handleChange);
+tour.on('complete', () => {
+    console.log('Tour finished');
+});
+```
+
+Each callback receives the current `Tour` instance as its first argument.
+
+## Unsubscribing
+
+```js
+tour.off('changeStep', handleChange);
+tour.off('complete');
+```
+
+- Pass a callback to remove one listener.
+- Omit the callback to remove all listeners for that event.
+
+## Useful values in callbacks
+
+- `activeStep`
+- `activeStepIndex`
+- `stepList`
+- `config`
+
+## Optional global status
+
+The optional `Siteguide` export tells you whether a tour is currently running:
+
+```js
+import { Siteguide } from 'siteguide.js';
+
+if (Siteguide.isActive) {
+    console.log(Siteguide.activeTour);
+}
+```
