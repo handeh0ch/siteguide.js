@@ -5,12 +5,13 @@ import { themes as prismThemes } from 'prism-react-renderer';
 const config: Config = {
     title: 'Siteguide.js',
     tagline: 'Build polished onboarding tours with vanilla JavaScript and CSS.',
-    favicon: 'img/favicon.ico',
+    favicon: 'img/logo-sample.ico',
     url: 'https://handeh0ch.github.io',
     baseUrl: '/siteguide.js/',
     organizationName: 'handeh0ch',
     projectName: 'siteguide.js',
     onBrokenLinks: 'throw',
+    trailingSlash: true,
     markdown: {
         hooks: {
             onBrokenMarkdownLinks: 'warn',
@@ -36,9 +37,14 @@ const config: Config = {
         ],
     ],
     themeConfig: {
-        image: 'img/docusaurus-social-card.jpg',
         navbar: {
             title: 'Siteguide.js',
+            logo: {
+                alt: 'Siteguide.js logo',
+                src: 'img/logo-sample.svg',
+                width: 32,
+                height: 32,
+            },
             items: [
                 {
                     to: '/',
