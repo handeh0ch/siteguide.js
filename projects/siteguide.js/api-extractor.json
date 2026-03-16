@@ -1,7 +1,0 @@
-{
-    "extends": "@microsoft/api-extractor/extends/standard.json",
-    "mainEntryPointFilePath": "./dist/index.d.ts",
-    "dtsRollup": {
-        "enabled": true
-    }
-}

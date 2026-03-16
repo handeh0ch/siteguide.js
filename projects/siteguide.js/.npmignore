@@ -1,8 +1,0 @@
-*
-
-!/dist
-!/dist/*
-!package.json
-!package-lock.json
-!README.md
-!LICENSE
