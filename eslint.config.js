@@ -5,6 +5,17 @@ import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+const IGNORE_PATTERNS = [
+    '**/node_modules/**',
+    '**/.docusaurus/**',
+    '**/build/**',
+    '**/dist/**',
+    '**/coverage/**',
+    '**/.next/**',
+    '**/out/**',
+    '**/*sample*',
+];
+
 /**
  * Adds ignores to the given ESLint configuration(s).
  *
@@ -16,7 +27,7 @@ function withIgnores(configs) {
         return [
             {
                 ...configs,
-                ignores: ['**/dist/**', '**/*sample*'],
+                ignores: IGNORE_PATTERNS,
             },
         ];
     }
@@ -24,7 +35,7 @@ function withIgnores(configs) {
     return configs.map((config) => {
         return {
             ...config,
-            ignores: ['**/dist/**', '**/*sample*'],
+            ignores: IGNORE_PATTERNS,
         };
     });
 }

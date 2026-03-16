@@ -1,0 +1,55 @@
+---
+title: Step Targeting and Hosts
+description: Point steps at selectors, elements, or dynamic targets.
+---
+
+# Step Targeting and Hosts
+
+Use `host` when a step should point to a specific part of the interface. Leave it out when you want a centered popup instead.
+
+## Supported host values
+
+```ts
+type PopupHost =
+    | string
+    | HTMLElement
+    | (() => HTMLElement | string | null | undefined);
+```
+
+## When to use each option
+
+| Host type | Use when |
+| --- | --- |
+| CSS selector string | The target has a stable selector. |
+| `HTMLElement` | You already have a direct element reference. |
+| Function | The target may appear later or change between runs. |
+| Omitted host | You want a centered welcome or summary step. |
+
+## Examples
+
+```js
+tour.addStep({
+    host: '.billing-button',
+    popup: { type: 'text', title: 'Billing', text: 'Manage plan and invoices here.' },
+});
+```
+
+```js
+tour.addStep({
+    host: document.querySelector('#profile-tab'),
+    popup: { type: 'text', title: 'Profile', text: 'Edit your personal settings.' },
+});
+```
+
+```js
+tour.addStep({
+    host: () => document.querySelector('[data-tour="dynamic-target"]'),
+    popup: { type: 'text', title: 'Dynamic target', text: 'Look up the target right before the step opens.' },
+});
+```
+
+## If no target is found
+
+If no target element is found, the step opens as a centered popup.
+
+This works well for welcome screens, optional UI, and flows where the page can change between users.

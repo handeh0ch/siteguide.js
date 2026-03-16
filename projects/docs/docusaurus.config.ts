@@ -2,18 +2,20 @@ import type * as Preset from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
 import { themes as prismThemes } from 'prism-react-renderer';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
     title: 'Siteguide.js',
-    tagline: 'Website guides and onboarding tours building library',
+    tagline: 'Build polished onboarding tours with vanilla JavaScript and CSS.',
     favicon: 'img/favicon.ico',
-    url: 'https://siteguide.github.io',
-    baseUrl: '/',
+    url: 'https://handeh0ch.github.io',
+    baseUrl: '/siteguide.js/',
     organizationName: 'handeh0ch',
     projectName: 'siteguide.js',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
+    },
     i18n: {
         defaultLocale: 'en',
         locales: ['en'],
@@ -25,6 +27,7 @@ const config: Config = {
                 docs: {
                     sidebarPath: './sidebars.ts',
                     editUrl: 'https://github.com/handeh0ch/siteguide.js/tree/main/projects/docs',
+                    routeBasePath: 'docs',
                 },
                 theme: {
                     customCss: './src/css/custom.css',
@@ -33,20 +36,20 @@ const config: Config = {
         ],
     ],
     themeConfig: {
-        // Replace with your project's social card
-        // image: 'img/docusaurus-social-card.jpg',
+        image: 'img/docusaurus-social-card.jpg',
         navbar: {
             title: 'Siteguide.js',
-            // logo: {
-            //     alt: 'My Site Logo',
-            //     src: 'img/logo.svg',
-            // },
             items: [
                 {
-                    type: 'docSidebar',
-                    sidebarId: 'docSidebar',
+                    to: '/',
+                    label: 'Home',
                     position: 'left',
-                    label: 'documentation',
+                },
+                {
+                    type: 'docSidebar',
+                    sidebarId: 'docsSidebar',
+                    position: 'left',
+                    label: 'Docs',
                 },
                 {
                     href: 'https://github.com/handeh0ch/siteguide.js',
@@ -61,6 +64,38 @@ const config: Config = {
         },
         footer: {
             style: 'dark',
+            links: [
+                {
+                    title: 'Docs',
+                    items: [
+                        {
+                            label: 'Introduction',
+                            to: '/docs/intro',
+                        },
+                        {
+                            label: 'Quick Start',
+                            to: '/docs/getting-started/quick-start',
+                        },
+                        {
+                            label: 'API Reference',
+                            to: '/docs/api-reference/tour',
+                        },
+                    ],
+                },
+                {
+                    title: 'Community',
+                    items: [
+                        {
+                            label: 'GitHub',
+                            href: 'https://github.com/handeh0ch/siteguide.js',
+                        },
+                        {
+                            label: 'Releases',
+                            href: 'https://github.com/handeh0ch/siteguide.js/releases',
+                        },
+                    ],
+                },
+            ],
             copyright: `Copyright © ${new Date().getFullYear()} Siteguide.js.`,
         },
     } satisfies Preset.ThemeConfig,

@@ -1,20 +1,14 @@
 ---
-sidebar_position: 2
+title: Quick Start
+description: Create, populate, and start a tour in a few lines.
 ---
 
 # Quick Start
 
-Basic information about the way to quickly get started with Siteguide.js.
+Use this example when you want a quick, realistic starting point. It creates a two-step tour and starts it from a button click.
 
-## Installation
-
-Before you start, make sure you have installed Siteguide.js. Read the [Installation](/getting-started/installation) page to install the library.
-
-## Adding a tour to your project
-
-### 1. Create a tour
-
-```js title='script.js'
+```js title="app.js"
+import 'siteguide.js/dist/css/siteguide.css';
 import { Tour } from 'siteguide.js';
 
 const tour = new Tour({
@@ -23,45 +17,48 @@ const tour = new Tour({
         block: 'center',
         inline: 'center',
     },
+    progress: {
+        disable: false,
+    },
+});
+
+tour.addSteps([
+    {
+        host: '.hero-cta',
+        popup: {
+            type: 'text',
+            title: 'Start here',
+            text: 'Introduce the primary action before users explore the rest of the page.',
+        },
+    },
+    {
+        host: '.settings-link',
+        popup: {
+            type: 'text',
+            title: 'Configuration',
+            text: 'Guide users to the place where they can tune the experience later.',
+            position: 'left',
+        },
+    },
+]);
+
+document.querySelector('#start-tour')?.addEventListener('click', () => {
+    tour.start();
 });
 ```
 
+## What this example does
 
-### 2. Add steps to the tour
+1. `new Tour()` creates a tour instance with your chosen options.
+2. `addSteps()` adds two steps in the order you want to show them.
+3. `start()` opens the first step when the user clicks the button.
+4. `next()`, `prev()`, and `goTo()` are available when you want custom navigation later.
 
-```js title='script.js'
-const stepList = [
-    {
-        id: '1',
-        host: '.step-1',
-        popup: {
-            text: "I'm step 1",
-            title: 'Step 1',
-            type: 'text',
-        },
-    },
-    {
-        id: '2',
-        host: '.step-1',
-        popup: {
-            title: 'Step 2',
-            text: "I'm step 2",
-            type: 'text',
-        },
-    },
-];
+## Common next steps
 
-tour.addSteps(stepList);
-```
+- Add `buttonList` when you need custom step actions.
+- Use `type: 'custom'` when the popup body should be a DOM node you control.
+- Set `keyboardControl: true` to support left and right arrow navigation.
+- Pass a `translateFn` if your app already has localization tokens.
 
-:::note
-
-Don't forget to add classes `.step-1` and `.step-2` to elements on page.
-
-:::
-
-### 3. Start a tour
-
-```js title='script.js'
-tour.start();
-```
+From here, the best next reads are [Tour Lifecycle](../guides/tour-lifecycle) and [Popups and Content](../guides/popups-and-content).

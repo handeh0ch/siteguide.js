@@ -1,30 +1,45 @@
 ---
-sidebar_position: 1
+title: Installation
+description: Install Siteguide.js and load the default stylesheet.
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 # Installation
 
-You can install Siteguide.js using npm.
+Install Siteguide.js from npm:
 
-<Tabs>
-    <TabItem value="npm" label="Npm">
-        ```bash
-        npm install siteguide.js --save
-        ```
-    </TabItem>
-</Tabs>
+```bash
+npm install siteguide.js
+```
 
-## Styles
+Then load the default stylesheet once in your application entry file:
 
-Import the stylesheet in your project.
-
-```css
+```js
 import 'siteguide.js/dist/css/siteguide.css';
 ```
 
-## Framework wrappers
+## Requirements
 
-Coming soon...
+- A browser environment with DOM access.
+- A bundler or asset pipeline that can import npm packages.
+- Modern browser support for common DOM APIs.
+
+## Minimal setup
+
+```js
+import 'siteguide.js/dist/css/siteguide.css';
+import { Tour } from 'siteguide.js';
+
+const tour = new Tour({});
+```
+
+## Without the default CSS
+
+You can skip the bundled stylesheet and write your own styles instead. When you do that, set `classPrefix` in `TourConfig` so your CSS can target the generated markup with predictable class names.
+
+```js
+const tour = new Tour({
+    classPrefix: 'my-guide',
+});
+```
+
+Continue with [Quick Start](./quick-start) to build the first tour.

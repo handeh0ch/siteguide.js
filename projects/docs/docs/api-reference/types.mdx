@@ -1,0 +1,167 @@
+---
+title: Types
+description: Reference for the main public types used in Siteguide.js.
+---
+
+# Types
+
+This page covers the main public types you are most likely to use when building a tour.
+
+## Core tour configuration
+
+Use these types to configure the tour itself.
+
+### `TourConfig`
+
+```ts
+type TourConfig = {
+    classPrefix?: string;
+    class?: string;
+    buttons?: { nextText?: string; prevText?: string };
+    close?: { button?: boolean; clickout?: boolean; esc?: boolean };
+    scrollTo?: boolean | ScrollIntoViewOptions;
+    closeIcon?: HTMLElement;
+    arrow?: { disable?: boolean; class?: string; padding?: number };
+    highlight?: { disable?: boolean; padding?: number; class?: string };
+    progress?: { disable?: boolean; text?: string };
+    interaction?: { disable?: boolean };
+    background?: { disable?: boolean };
+    keyboardControl?: boolean;
+    animation?: { class?: string; delay?: number };
+    translateFn?: (token: string) => string;
+}
+```
+
+Use `TourConfig` to define tour-wide behavior such as button labels, close rules, keyboard navigation, progress text, or styling hooks.
+
+### `TourStepConfig`
+
+```ts
+type TourStepConfig = {
+    index?: number;
+    host?: PopupHost;
+    popup: PopupData;
+}
+```
+
+Use `TourStepConfig` to describe a single step in the tour.
+
+### `PopupHost`
+
+```ts
+type PopupHost = string | HTMLElement | (() => HTMLElement | string | null | undefined)
+```
+
+Use `PopupHost` when a step should point to a selector, a DOM element, or a function that returns one.
+
+## Popup content
+
+Use these types to define what each step shows.
+
+### `PopupData`
+
+```ts
+type PopupData = TextPopupData | CustomPopupData
+```
+
+`PopupData` is the main union for popup content.
+
+### `PopupType`
+
+```ts
+type PopupType = 'text' | 'custom'
+```
+
+Use `PopupType` to choose between a text popup and a custom popup.
+
+### `PopupPosition`
+
+```ts
+type PopupPosition =
+    | 'auto'
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-end'
+    | 'top-start'
+    | 'bottom-end'
+    | 'bottom-start'
+    | 'left-end'
+    | 'left-start'
+    | 'right-end'
+    | 'right-start'
+```
+
+Use `PopupPosition` when you want to prefer a specific popup placement.
+
+### `TextPopupData`
+
+```ts
+type TextPopupData = SharedPopupData & {
+    type: 'text';
+    text?: string;
+    imgSrc?: string;
+}
+```
+
+Use `TextPopupData` for the standard title, description, image, and button layout.
+
+### `CustomPopupData`
+
+```ts
+type CustomPopupData = SharedPopupData & {
+    type: 'custom';
+    node: HTMLElement;
+}
+```
+
+Use `CustomPopupData` when the popup body should come from your own DOM node.
+
+### `PopupCustomization`
+
+```ts
+type PopupCustomization = {
+    class?: string;
+    headerClass?: string;
+    titleClass?: string;
+    contentClass?: string;
+    descriptionClass?: string;
+    footerClass?: string;
+    progressClass?: string;
+    imageClass?: string;
+}
+```
+
+Use `PopupCustomization` when one step needs its own classes for styling.
+
+## Buttons and events
+
+Use these types when you customize actions or listen to events.
+
+### `TourButtonType`
+
+```ts
+type TourButtonType = 'primary' | 'secondary' | 'link'
+```
+
+### `TourButtonConfig`
+
+```ts
+type TourButtonConfig = {
+    text: string;
+    type?: TourButtonType;
+    class?: string;
+    action: (() => void) | (() => Promise<void>);
+}
+```
+
+Use `TourButtonConfig` when a step should include custom actions.
+
+### `TourEventType`
+
+```ts
+type TourEventType = 'start' | 'complete' | 'close' | 'next' | 'prev' | 'changeStep'
+```
+
+Use `TourEventType` with `tour.on()` and `tour.off()`.

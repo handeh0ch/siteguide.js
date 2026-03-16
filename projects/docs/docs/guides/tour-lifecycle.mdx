@@ -1,0 +1,63 @@
+---
+title: Tour Lifecycle
+description: Learn how to create, start, update, and finish a tour.
+---
+
+# Tour Lifecycle
+
+Use `Tour` when you want a single object to manage the full flow. In most projects, you create the tour once, add steps, start it at the right moment, and react to events as the user moves through it.
+
+## Core methods
+
+| Method | Purpose |
+| --- | --- |
+| `addStep(config)` | Adds one step to the tour. |
+| `addSteps(configs)` | Adds multiple steps in one call. |
+| `start()` | Starts the tour and opens the first step. |
+| `next()` | Moves to the next step. |
+| `prev()` | Moves to the previous step. |
+| `goTo(index)` | Jumps directly to a zero-based step index. |
+| `close()` | Closes the tour. |
+| `complete()` | Marks the tour as finished. |
+
+## Typical flow
+
+Most tours follow this pattern:
+
+1. Create a `Tour` with global settings.
+2. Add one or more steps.
+3. Call `start()` when the user is ready.
+4. Let the built-in controls move through the tour, or call `next()`, `prev()`, and `goTo()` yourself.
+5. Call `close()` to stop early or `complete()` when you want to finish programmatically.
+
+## Ordering rules
+
+Steps are shown in index order.
+
+- If you omit `index`, Siteguide.js places the step after the existing ones.
+- If you provide `index`, use it to control the order explicitly.
+- `removeStep(index)` removes the step with that index.
+
+## Useful state
+
+These properties are the ones most apps care about:
+
+- `stepList`
+- `config`
+- `activeStep`
+- `activeStepIndex`
+
+## Updating a running tour
+
+Use `setConfig()` when you want to change the tour after it has been created:
+
+```js
+tour.setConfig({
+    keyboardControl: true,
+    progress: {
+        disable: false,
+    },
+});
+```
+
+This is useful when you want to enable progress, change labels, or adjust behavior in response to user actions.
