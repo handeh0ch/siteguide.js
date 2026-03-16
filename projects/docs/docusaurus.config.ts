@@ -11,6 +11,7 @@ const config: Config = {
     organizationName: 'handeh0ch',
     projectName: 'siteguide.js',
     onBrokenLinks: 'throw',
+    trailingSlash: true,
     markdown: {
         hooks: {
             onBrokenMarkdownLinks: 'warn',
